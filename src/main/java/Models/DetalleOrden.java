@@ -19,7 +19,7 @@ public class DetalleOrden {
     @Id
     @ManyToOne
     @JoinColumn(name = "cod_or")
-    private models.Orden orden;
+    private Orden orden;
 
     @Column(name = "can_dor")
     private int cantidad;

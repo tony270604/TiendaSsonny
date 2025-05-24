@@ -46,7 +46,7 @@ public class Boleta {
 
     @ManyToOne
     @JoinColumn(name = "cod_or")
-    private models.Orden orden;
+    private Orden orden;
 
     @ManyToOne
     @JoinColumn(name = "comprobante")
