@@ -25,14 +25,17 @@ public class Mozo {
     private String contraMoz;
 
     @Lob
-    @Column(name = "img1_moz")
+    @Column(name = "img1_moz", columnDefinition = "BLOB")
     private byte[] img1Moz;
 
     @ManyToOne
-    @JoinColumn(name = "cod_adm", nullable = false)
+    @JoinColumn(name = "cod_adm", insertable = false, updatable = false)
     private Administrador administrador;
 
 
-    @OneToMany(mappedBy = "mozo")
+    @OneToMany(mappedBy = "mozo", cascade = CascadeType.ALL)
     private List<Boleta> boletas;
+    
+    @OneToMany(mappedBy = "mozo", cascade = CascadeType.ALL)
+    private List<Orden> orden;
 }

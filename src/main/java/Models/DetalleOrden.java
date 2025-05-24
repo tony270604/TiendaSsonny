@@ -13,12 +13,12 @@ public class DetalleOrden {
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "cod_com")
+    @JoinColumn(name = "cod_com", insertable = false, updatable = false)
     private Comida comida;
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "cod_or")
+    @JoinColumn(name = "cod_or", insertable = false, updatable = false)
     private Orden orden;
 
     @Column(name = "can_dor")

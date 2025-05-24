@@ -1,6 +1,7 @@
 package Models;
 
 import jakarta.persistence.*;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,4 +17,7 @@ public class Comprobante {
 
     @Column(name = "nom_compro", length = 30)
     private String nomCompro;
+    
+    @OneToMany(mappedBy = "coboleta", cascade = CascadeType.ALL) 
+    private List<Boleta> coboleta;
 }

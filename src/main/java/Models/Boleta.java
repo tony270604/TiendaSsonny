@@ -1,13 +1,10 @@
 package Models;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.Date;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 @Entity
 @Table(name = "boleta")
 public class Boleta {
@@ -19,7 +16,8 @@ public class Boleta {
     @Temporal(TemporalType.DATE)
     @Column(name = "fec_bol")
     private Date fecha;
-
+    
+    @Column(name = "propina")
     private Float propina;
 
     @Column(name = "total_bol")
@@ -41,20 +39,20 @@ public class Boleta {
     private String correoCli;
 
     @ManyToOne
-    @JoinColumn(name = "cod_moz")
+    @JoinColumn(name = "cod_moz", insertable = false, updatable = false)
     private Mozo mozo;
 
     @ManyToOne
-    @JoinColumn(name = "cod_or")
+    @JoinColumn(name = "cod_or", insertable = false, updatable = false)
     private Orden orden;
 
     @ManyToOne
-    @JoinColumn(name = "comprobante")
-    private Comprobante comprobante;
+    @JoinColumn(name = "comprobante", insertable = false, updatable = false)
+    private Comprobante coboleta;
 
     @ManyToOne
-    @JoinColumn(name = "tipopago")
-    private TipoPago tipoPago;
+    @JoinColumn(name = "tipopago", insertable = false, updatable = false)
+    private TipoPago tipboleta;
 
 
 

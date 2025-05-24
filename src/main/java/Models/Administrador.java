@@ -23,7 +23,7 @@ public class Administrador {
     private String contraAdm;
 
     @Lob
-    @Column(name = "img1_adm")
+    @Column(name = "img1_adm", columnDefinition = "BLOB")
     private byte[] img1Adm;
 
     @OneToMany(mappedBy = "administrador", cascade = CascadeType.ALL)
