@@ -1,4 +1,4 @@
-package Models;
+package backend.modelo;
 
 import jakarta.persistence.*;
 import java.util.List;
@@ -25,11 +25,4 @@ public class Comida {
     @OneToMany(mappedBy = "comida")
     private List<DetalleOrden> detalles;
 
-    @ManyToMany
-    @JoinTable(
-            name = "categoria_comida",
-            joinColumns = @JoinColumn(name = "cod_com"),
-            inverseJoinColumns = @JoinColumn(name = "cod_cat")
-    )
-    private List<CategoriaComida> categorias;
 }

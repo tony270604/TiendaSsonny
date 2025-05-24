@@ -1,4 +1,4 @@
-package Models;
+package backend.modelo;
 
 
 import jakarta.persistence.*;
