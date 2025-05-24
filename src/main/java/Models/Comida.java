@@ -1,0 +1,38 @@
+package Models;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.List;
+
+@Getter
+@Setter
+@Entity
+@Table(name = "comida")
+public class Comida {
+
+    @Id
+    @Column(name = "cod_com", length = 4)
+    private String codCom;
+
+    @Column(name = "nom_com", length = 50, nullable = false)
+    private String nomCom;
+
+    @Column(name = "prec_nom", nullable = false)
+    private float precNom;
+
+    @Column(name = "desc_com", length = 1000, nullable = false)
+    private String descCom;
+
+    @OneToMany(mappedBy = "comida")
+    private List<DetalleOrden> detalles;
+
+    @ManyToMany
+    @JoinTable(
+            name = "categoria_comida",
+            joinColumns = @JoinColumn(name = "cod_com"),
+            inverseJoinColumns = @JoinColumn(name = "cod_cat")
+    )
+    private List<CategoriaComida> categorias;
+}
