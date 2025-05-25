@@ -25,6 +25,9 @@ public class Administrador {
     @Lob
     @Column(name = "img1_adm", columnDefinition = "BLOB")
     private byte[] img1Adm;
+    
+    @Transient
+    private String img1Adm_base64;
 
     @OneToMany(mappedBy = "administrador", cascade = CascadeType.ALL)
     private List<Mozo> mozos;

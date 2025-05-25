@@ -13,6 +13,7 @@ import java.util.List;
 public class Mozo {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cod_moz", length = 4)
     private String codMoz;
 
@@ -28,6 +29,9 @@ public class Mozo {
     @Lob
     @Column(name = "img1_moz", columnDefinition = "BLOB")
     private byte[] img1Moz;
+    
+    @Transient
+    private String img1Moz_base64;
 
     @ManyToOne
     @JoinColumn(name = "cod_adm", insertable = false, updatable = false)

@@ -25,4 +25,8 @@ public class Comida {
     @OneToMany(mappedBy = "comida")
     private List<DetalleOrden> detalles;
 
+    @ManyToMany(mappedBy = "comidas")
+    private List<Categoria> categorias;
+
+
 }

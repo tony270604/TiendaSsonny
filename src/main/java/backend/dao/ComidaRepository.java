@@ -1,4 +1,7 @@
 package backend.dao;
 
-public class ComidaRepository {
+import backend.modelo.Comida;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ComidaRepository extends JpaRepository<Comida, String> {
 }

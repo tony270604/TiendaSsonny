@@ -1,4 +1,7 @@
 package backend.dao;
 
-public class MozoRepository {
+import backend.modelo.Mozo;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface MozoRepository extends JpaRepository<Mozo, String> {
 }

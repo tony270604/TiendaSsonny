@@ -1,4 +1,11 @@
 package backend.dao;
 
-public class OrdenRepository {
+import backend.modelo.Orden;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface OrdenRepository extends JpaRepository<Orden, String> {
+    List<Orden> findByCodMoz(String codMoz);
+
 }

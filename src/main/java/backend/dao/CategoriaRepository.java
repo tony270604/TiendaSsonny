@@ -1,4 +1,7 @@
 package backend.dao;
 
-public class CategoriaRepository {
+import backend.modelo.Categoria;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface CategoriaRepository extends JpaRepository<Categoria, String> {
 }
