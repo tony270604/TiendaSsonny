@@ -1,6 +1,5 @@
 package backend.modelo;
 
-
 import jakarta.persistence.*;
 import java.sql.Time;
 import java.util.List;
@@ -30,9 +29,7 @@ public class Orden {
     @Column(name = "cod_moz")
     private String codMoz;
 
-
     @OneToMany(mappedBy = "orden", cascade = CascadeType.ALL)
     private List<Boleta> boletas;
 
-
-    }
+}

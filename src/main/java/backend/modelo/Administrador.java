@@ -10,6 +10,7 @@ import lombok.Data;
 public class Administrador {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cod_adm", length = 4)
     private String codAdm;
 
