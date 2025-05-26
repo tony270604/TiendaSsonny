@@ -21,6 +21,9 @@ public class ReportesService {
     
     @Autowired
     private BoletaRepository boletaRepository;
+    
+    @Autowired
+    private MozoRepository mozoRepository;
 
     public List<Map<String, Object>> obtenerComprobantesReporte(Integer year, Integer month, Integer day) {
         return comprobanteRepository.ObtenerComprobantesReporte(year, month, day);
@@ -38,6 +41,10 @@ public class ReportesService {
     
     public List<Map<String, Object>> ObtenerIngresosReporteFiltro(Integer year, Integer month, Integer day) {
         return boletaRepository.ObtenerIngresosReporteFiltro(year, month, day);
+    }
+    
+    public List<Map<String, Object>> ObtenerPropinaReporteFiltro(String codMoz,Integer year, Integer month, Integer day) {
+        return mozoRepository.ObtenerPropinaReporteFiltro(codMoz ,year, month, day);
     }
 
 }

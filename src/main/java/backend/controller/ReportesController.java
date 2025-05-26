@@ -57,4 +57,14 @@ public class ReportesController {
     ) {
         return reportesService.ObtenerIngresosReporteFiltro(year, month, day);
     }
+    
+    @GetMapping("/propinafiltro")
+    public List<Map<String, Object>> ObtenerPropinaReporteFiltro(
+            @RequestParam(required = false) String codMoz,
+            @RequestParam(required = false) Integer year,
+            @RequestParam(required = false) Integer month,
+            @RequestParam(required = false) Integer day
+    ) {
+        return reportesService.ObtenerPropinaReporteFiltro(codMoz,year, month, day);
+    }
 }
