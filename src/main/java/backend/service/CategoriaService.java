@@ -4,6 +4,7 @@ import backend.dao.CategoriaRepository;
 import backend.dto.CategoriaNombreDTO;
 import backend.dto.ComidaNombreDTO;
 import backend.modelo.Categoria;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,10 +19,13 @@ public class CategoriaService {
         this.categoriaRepository = categoriaRepository;
     }
 
+    @Transactional
+
     public List<CategoriaNombreDTO> listarNombres() {
         return categoriaRepository.findAll()
                 .stream()
-                .map(c -> new CategoriaNombreDTO(c.getNom_cat()))
+                .map(c -> new CategoriaNombreDTO(c.getNom_cat(), c.getCod_cat()))
+
                 .collect(Collectors.toList());
     }
 
@@ -30,7 +34,8 @@ public class CategoriaService {
         if (categoria == null) return List.of();
 
         return categoria.getComidas().stream()
-                .map(comida -> new ComidaNombreDTO(comida.getNomCom()))
+                .map(comida -> new ComidaNombreDTO(comida.getCodCom(), comida.getNomCom()))
                 .collect(Collectors.toList());
     }
+
 }

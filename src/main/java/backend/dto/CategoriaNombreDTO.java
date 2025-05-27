@@ -7,4 +7,5 @@ import lombok.Data;
 @AllArgsConstructor
 public class CategoriaNombreDTO {
     private String nombre;
+    private String cod_cat;
 }

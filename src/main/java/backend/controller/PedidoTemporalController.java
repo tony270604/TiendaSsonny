@@ -9,7 +9,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/pedido-temporal")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:4200")
 public class PedidoTemporalController {
 
     private final PedidoTemporalService pedidoService;
@@ -41,6 +41,15 @@ public class PedidoTemporalController {
     @GetMapping("/resumen")
     public List<ResumenPedidoDTO> verResumenDetallado() {
         return pedidoService.obtenerResumenPedido();
+    }
+    /** Devuelve total de ítems en el carrito */
+    @GetMapping("/count")
+    public int contarItems() {
+        return pedidoService.obtenerPedidoCrudo()
+                .values()
+                .stream()
+                .mapToInt(Integer::intValue)
+                .sum();
     }
 
 }

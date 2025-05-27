@@ -32,6 +32,7 @@ public class PedidoTemporalService {
         }
     }
 
+
     public Map<String, Integer> obtenerPedidoCrudo() {
         return pedidoTemporal;
     }
