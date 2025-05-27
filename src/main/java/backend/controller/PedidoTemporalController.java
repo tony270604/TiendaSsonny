@@ -38,11 +38,15 @@ public class PedidoTemporalController {
     public void limpiarPedido() {
         pedidoService.limpiarPedido();
     }
+
     @GetMapping("/resumen")
     public List<ResumenPedidoDTO> verResumenDetallado() {
         return pedidoService.obtenerResumenPedido();
     }
-    /** Devuelve total de ítems en el carrito */
+
+    /**
+     * Devuelve total de ítems en el carrito
+     */
     @GetMapping("/count")
     public int contarItems() {
         return pedidoService.obtenerPedidoCrudo()
