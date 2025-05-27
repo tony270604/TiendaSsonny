@@ -80,6 +80,7 @@ public class OrdenService {
         // 6. Limpiar pedido temporal
         pedidoTemporalService.limpiarPedido();
     }
+
     public List<OrdenResumenDTO> listarOrdenesPorMozo(String codMoz) {
         List<Orden> ordenes = ordenRepository.findByCodMoz(codMoz);
         List<OrdenResumenDTO> resumenes = new ArrayList<>();
