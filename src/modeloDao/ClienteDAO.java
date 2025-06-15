@@ -1,11 +1,15 @@
 package modeloDao;
 
+import modelo.Cliente;
 import confi.Conexion;
+//import java.awt.List;
+import java.util.List;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
 
 public class ClienteDAO {
@@ -123,6 +127,29 @@ public class ClienteDAO {
             System.out.println("Error al eliminar cliente: " + e.getMessage());
             return false;
         }
+    }
+
+    //LISTAR CLIENTE
+    public List<Cliente> listarClientes() {
+        List<Cliente> lista = new ArrayList<>();
+        String sql = "SELECT * FROM cliente";
+
+        try (Connection con = Conexion.getConexion(); PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Cliente cli = new Cliente();
+                cli.setDni_cli(rs.getString("dni_cli"));
+                cli.setNom_cli(rs.getString("nom_cli"));
+                cli.setNum_cli(Integer.parseInt(rs.getString("num_cli")));
+                cli.setCorreo_cli(rs.getString("correo_cli"));
+                lista.add(cli);
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error al listar clientes: " + e.getMessage());
+        }
+
+        return lista;
     }
 
 }
