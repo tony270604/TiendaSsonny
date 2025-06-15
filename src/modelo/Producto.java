@@ -1,12 +1,12 @@
 package modelo;
 
 public class Producto {
-    
+
     public String cod_pro;
     public String nom_pro;
     public int stock_pro;
     public float prec_pro;
-    
+
     public String getCod_pro() {
         return cod_pro;
     }
@@ -37,5 +37,10 @@ public class Producto {
 
     public void setPrec_pro(float prec_pro) {
         this.prec_pro = prec_pro;
+    }
+
+    @Override
+    public String toString() {
+        return nom_pro + " - S/ " + prec_pro;
     }
 }

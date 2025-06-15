@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.sql.Statement;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -16,13 +17,14 @@ import modelo.*;
 public class ProductoDao {
 
     Producto p;
-
+    
+    //AGREGAR PRODUCTO
     public boolean agregarProducto(Producto p, int cod_cat) throws SQLException {
         String sqlProducto = "INSERT INTO producto (cod_pro, nom_pro, stock_pro, prec_pro) VALUES (?, ?, ?, ?)";
         String sqlCategoriaProducto = "INSERT INTO categoriaproducto (cod_cat, cod_pro) VALUES (?, ?)";
 
         try (Connection con = Conexion.getConexion()) {
-            con.setAutoCommit(false); 
+            con.setAutoCommit(false);
 
             try (PreparedStatement pstProducto = con.prepareStatement(sqlProducto); PreparedStatement pstCategoria = con.prepareStatement(sqlCategoriaProducto)) {
 
@@ -48,7 +50,8 @@ public class ProductoDao {
             }
         }
     }
-
+    
+    //LISTAR PRODUCTO
     public DefaultTableModel listarProducto() {
         DefaultTableModel modelo = new DefaultTableModel();
         modelo.addColumn("cod_pro");
@@ -162,7 +165,7 @@ public class ProductoDao {
         String sqlCategoriaProducto = "UPDATE categoriaproducto SET cod_cat = ? WHERE cod_pro = ?";
 
         try (Connection con = Conexion.getConexion()) {
-            con.setAutoCommit(false); 
+            con.setAutoCommit(false);
 
             try (
                     PreparedStatement pstProducto = con.prepareStatement(sqlProducto); PreparedStatement pstCategoria = con.prepareStatement(sqlCategoriaProducto)) {
@@ -178,7 +181,7 @@ public class ProductoDao {
                 pstCategoria.setString(2, p.cod_pro);
                 pstCategoria.executeUpdate();
 
-                con.commit(); 
+                con.commit();
                 return true;
 
             } catch (SQLException e) {
@@ -190,34 +193,57 @@ public class ProductoDao {
     }
 
     public boolean eliminarProducto(String cod_pro) throws SQLException {
-    String sqlCategoria = "DELETE FROM CategoriaProducto WHERE cod_pro = ?";
-    String sqlProducto  = "DELETE FROM Producto         WHERE cod_pro = ?";
+        String sqlCategoria = "DELETE FROM CategoriaProducto WHERE cod_pro = ?";
+        String sqlProducto = "DELETE FROM Producto         WHERE cod_pro = ?";
 
-    try (Connection con = Conexion.getConexion()) {
-        con.setAutoCommit(false); 
+        try (Connection con = Conexion.getConexion()) {
+            con.setAutoCommit(false);
 
-        try (PreparedStatement pstCat  = con.prepareStatement(sqlCategoria);
-             PreparedStatement pstProd = con.prepareStatement(sqlProducto)) {
+            try (PreparedStatement pstCat = con.prepareStatement(sqlCategoria); PreparedStatement pstProd = con.prepareStatement(sqlProducto)) {
 
-            pstCat.setString(1, cod_pro);
-            pstCat.executeUpdate();
+                pstCat.setString(1, cod_pro);
+                pstCat.executeUpdate();
 
+                pstProd.setString(1, cod_pro);
+                int rows = pstProd.executeUpdate();
 
-            pstProd.setString(1, cod_pro);
-            int rows = pstProd.executeUpdate();
+                con.commit();
+                return rows > 0;
 
-            con.commit();           
-            return rows > 0;    
-
-        } catch (SQLException e) {
-            con.rollback();       
-            JOptionPane.showMessageDialog(
-                null,
-                "Error al eliminar producto: " + e.getMessage()
-            );
-            return false;
+            } catch (SQLException e) {
+                con.rollback();
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Error al eliminar producto: " + e.getMessage()
+                );
+                return false;
+            }
         }
     }
-}
 
+    
+    //LISTAR PRODUCTO COMBO-BOLETA
+    public List<Producto> listarProductosBoletas() {
+        List<Producto> lista = new ArrayList<>();
+        String sql = "SELECT * FROM producto";
+
+        try (Connection con = Conexion.getConexion();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Producto p = new Producto();
+                p.setCod_pro(rs.getString("cod_pro"));
+                p.setNom_pro(rs.getString("nom_pro"));
+                p.setStock_pro(rs.getInt("stock_pro"));
+                p.setPrec_pro(rs.getFloat("prec_pro"));
+                lista.add(p);
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error al listar productos: " + e.getMessage());
+        }
+
+        return lista;
+    }
 }
