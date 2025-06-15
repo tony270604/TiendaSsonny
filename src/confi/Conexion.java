@@ -14,7 +14,7 @@ public class Conexion {
             String psw = "root"; 
 
             con = DriverManager.getConnection(url, usr, psw);
-            System.out.println("Conexión correcta bdd ssonny.");
+            System.out.println("Conexion correcta bdd ssonny.");
         } 
         catch (ClassNotFoundException ex) { 
             JOptionPane.showMessageDialog(null, "Error al cargar el driver: " + ex.toString());
