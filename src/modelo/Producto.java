@@ -9,5 +9,5 @@ package modelo;
  * @author tony2
  */
 public class Producto {
-    
+    String g0la;
 }
