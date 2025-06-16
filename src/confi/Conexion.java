@@ -9,9 +9,9 @@ public class Conexion {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
 
-            String url = "jdbc:mysql://localhost:3307/bd_sonny"; 
+            String url = "jdbc:mysql://localhost:3307/bdd_ssonny"; 
             String usr = "root";  
-            String psw = "root"; 
+            String psw = "tony"; 
 
             con = DriverManager.getConnection(url, usr, psw);
             System.out.println("Conexion correcta bdd ssonny.");

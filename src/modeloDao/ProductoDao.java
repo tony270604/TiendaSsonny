@@ -8,8 +8,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.sql.Statement;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelo.*;
@@ -18,7 +16,6 @@ public class ProductoDao {
 
     Producto p;
     
-    //AGREGAR PRODUCTO
     public boolean agregarProducto(Producto p, int cod_cat) throws SQLException {
         String sqlProducto = "INSERT INTO producto (cod_pro, nom_pro, stock_pro, prec_pro) VALUES (?, ?, ?, ?)";
         String sqlCategoriaProducto = "INSERT INTO categoriaproducto (cod_cat, cod_pro) VALUES (?, ?)";
@@ -51,7 +48,6 @@ public class ProductoDao {
         }
     }
     
-    //LISTAR PRODUCTO
     public DefaultTableModel listarProducto() {
         DefaultTableModel modelo = new DefaultTableModel();
         modelo.addColumn("cod_pro");
@@ -102,7 +98,7 @@ public class ProductoDao {
 
         try (Connection con = Conexion.getConexion(); PreparedStatement pst = con.prepareStatement(sql)) {
 
-            pst.setString(1, nombre + "%");
+            pst.setString(1, "%" + nombre + "%");
 
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
