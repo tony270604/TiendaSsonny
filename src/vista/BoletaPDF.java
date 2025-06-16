@@ -65,12 +65,12 @@ public class BoletaPDF extends javax.swing.JFrame {
 
         jLabel4.setFont(new java.awt.Font("Dutch801 XBd BT", 0, 18)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel4.setText("Dirección :");
+        jLabel4.setText("Correo :");
         jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 220, 150, 30));
 
         jLabel5.setFont(new java.awt.Font("Dutch801 XBd BT", 0, 18)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel5.setText("Telefono :");
+        jLabel5.setText("Número:");
         jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 260, 150, 30));
         jPanel1.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 300, 140, 30));
         jPanel1.add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 180, 140, 30));

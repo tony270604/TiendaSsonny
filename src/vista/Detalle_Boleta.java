@@ -164,7 +164,7 @@ public class Detalle_Boleta extends javax.swing.JFrame {
         jButton4.setText("Imprimir");
         jPanel4.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 330, -1, -1));
 
-        jLabel10.setText("jLabel10");
+        jLabel10.setText("Precio total :");
         jPanel4.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 260, -1, -1));
 
         jPanel1.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 60, 490, 400));
