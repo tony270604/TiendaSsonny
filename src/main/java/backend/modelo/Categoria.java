@@ -24,7 +24,4 @@ public class Categoria {
             inverseJoinColumns = @JoinColumn(name = "cod_com")
     )
     private List<Comida> comidas;
-
-
-
 }

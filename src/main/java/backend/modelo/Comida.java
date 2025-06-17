@@ -1,5 +1,7 @@
 package backend.modelo;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.List;
 import lombok.Data;
@@ -21,10 +23,10 @@ public class Comida {
 
     @Column(name = "desc_com", length = 1000, nullable = false)
     private String descCom;
-
+    
     @OneToMany(mappedBy = "comida")
     private List<DetalleOrden> detalles;
-
+    
     @ManyToMany(mappedBy = "comidas")
     private List<Categoria> categorias;
 }

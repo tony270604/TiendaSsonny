@@ -47,10 +47,15 @@ public class MozoController {
 
     @PutMapping("/editar/{id}")
     public ResponseEntity<Map<String, String>> actualizarMozo(@PathVariable String id, @RequestBody Mozo mozoDetalles) {
-        mozoService.actualizarMozo(id, mozoDetalles);
         Map<String, String> response = new HashMap<>();
-        response.put("mensaje", "Mozo actualizado correctamente");
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        try {
+            mozoService.actualizarMozo(id, mozoDetalles);
+            response.put("mensaje", "Mozo actualizado correctamente");
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (RuntimeException e) {
+            response.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
     }
 
     @PostMapping("/agregar")

@@ -1,5 +1,6 @@
 package backend.modelo;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -32,7 +33,7 @@ public class Mozo {
     @Transient
     private String img1Moz_base64;
     
-    @JsonIgnore
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "cod_adm")
     private Administrador administrador;
