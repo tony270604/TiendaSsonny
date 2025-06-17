@@ -11,6 +11,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelo.*;
+import modelo.Producto;
 
 public class ProductoDao {
 
@@ -242,4 +243,35 @@ public class ProductoDao {
 
         return lista;
     }
+    
+    
+    public List<ProductoDTO> listarProductosConPrecioDescuento() {
+        List<ProductoDTO> productos = new ArrayList<>();
+        String sql = "SELECT p.cod_pro, p.nom_pro, p.prec_pro, c.desc_cat, " +
+                     "p.prec_pro * (1 - c.desc_cat/100) AS precio_con_descuento " +
+                     "FROM producto p " +
+                     "JOIN categoriaproducto cp ON p.cod_pro = cp.cod_pro " +
+                     "JOIN categoria c ON cp.cod_cat = c.cod_cat " +
+                     "ORDER BY p.nom_pro";
+
+        try (Connection conn = Conexion.getConexion();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                String codigo = rs.getString("cod_pro");
+                String nombre = rs.getString("nom_pro");
+                float precioUnitario = rs.getFloat("prec_pro");
+                int descuento = rs.getInt("desc_cat");
+                float precioConDesc = rs.getFloat("precio_con_descuento");
+
+                productos.add(new ProductoDTO(codigo, nombre, precioUnitario, descuento, precioConDesc));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return productos;
+    }
+
 }

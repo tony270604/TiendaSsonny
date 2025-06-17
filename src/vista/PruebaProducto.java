@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelo.Categoria;
+import modelo.NombreUsuario;
 import modelo.Producto;
 import modeloDao.CategoriaDAO;
 import modeloDao.ProductoDao;
@@ -13,11 +14,7 @@ public class PruebaProducto extends javax.swing.JFrame {
 
     public PruebaProducto() {
         initComponents();
-    }
-
-    public PruebaProducto(String nom_ven) {
-        initComponents();
-        jblNombreVendedor.setText("Bienvenido " + nom_ven);
+        jblNombreVendedor.setText("Bienvenido: "+NombreUsuario.nombre_Usuario);
         //CENTRAR EL JFRAME 
         this.setLocationRelativeTo(null);
         cargaCombo();
@@ -25,6 +22,7 @@ public class PruebaProducto extends javax.swing.JFrame {
         DefaultTableModel modelo = pd.listarProducto();
         tabla1.setModel(modelo);
     }
+
 
     Producto p = new Producto();
     ProductoDao pd = new ProductoDao();
@@ -57,6 +55,7 @@ public class PruebaProducto extends javax.swing.JFrame {
         btnEditarPro = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
         btnSelecionar = new javax.swing.JButton();
+        btnVolver = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -112,6 +111,13 @@ public class PruebaProducto extends javax.swing.JFrame {
             }
         });
 
+        btnVolver.setText("Volver");
+        btnVolver.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVolverActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -122,7 +128,8 @@ public class PruebaProducto extends javax.swing.JFrame {
                     .addComponent(btnAgregar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnEditarPro, javax.swing.GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE)
                     .addComponent(btnEliminar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnSelecionar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnSelecionar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnVolver, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -130,13 +137,15 @@ public class PruebaProducto extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btnSelecionar)
-                .addGap(29, 29, 29)
+                .addGap(18, 18, 18)
                 .addComponent(btnAgregar)
-                .addGap(29, 29, 29)
+                .addGap(18, 18, 18)
                 .addComponent(btnEditarPro)
-                .addGap(34, 34, 34)
+                .addGap(18, 18, 18)
                 .addComponent(btnEliminar)
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(btnVolver)
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Campos", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 3, 12))); // NOI18N
@@ -490,6 +499,12 @@ public class PruebaProducto extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtBuscarActionPerformed
 
+    private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
+        Principal principal = new Principal();
+        principal.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnVolverActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -531,6 +546,7 @@ public class PruebaProducto extends javax.swing.JFrame {
     private javax.swing.JButton btnEditarPro;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnSelecionar;
+    private javax.swing.JButton btnVolver;
     private javax.swing.JComboBox<String> cbxCat;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

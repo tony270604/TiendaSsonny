@@ -94,6 +94,26 @@ public class ClienteDAO {
 
         return modelo;
     }
+    
+    public Cliente obtenerClientePorDNI(String dni) {
+    Cliente cliente = null;
+    String sql = "SELECT * FROM cliente WHERE dni_cli = ?";
+    try (Connection con = Conexion.getConexion(); PreparedStatement pst = con.prepareStatement(sql)) {
+        pst.setString(1, dni);
+        ResultSet rs = pst.executeQuery();
+        if (rs.next()) {
+            cliente = new Cliente();
+            cliente.setDni_cli(rs.getString("dni_cli"));
+            cliente.setNom_cli(rs.getString("nom_cli"));
+            cliente.setNum_cli(rs.getInt("num_cli"));
+            cliente.setCorreo_cli(rs.getString("correo_cli"));
+            // Completa con otros campos si existen
+        }
+    } catch (SQLException e) {
+        System.out.println("Error al buscar cliente por DNI: " + e.getMessage());
+    }
+    return cliente;
+}
 
     //EDITAR CLIENTE
     public boolean editarCliente(String dni, String nombre, String numero, String correo) {

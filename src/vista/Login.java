@@ -5,12 +5,13 @@ import javax.swing.JOptionPane;
 import modelo.Vendedor;
 import modeloDao.VendedorDAO;
 import java.sql.SQLException;
+import modelo.NombreUsuario;
 
 public class Login extends javax.swing.JFrame {
 
     public Login() {
         initComponents();
-         //CENTRAR 
+        //CENTRAR 
         this.setLocationRelativeTo(null);
     }
 
@@ -179,7 +180,9 @@ public class Login extends javax.swing.JFrame {
         try {
             if (vd.verificarLogin(v)) {
                 JOptionPane.showMessageDialog(null, "Inicio de sesión exitoso");
-                 new PruebaProducto(v.getNom_ven()).setVisible(true);
+                NombreUsuario.nombre_Usuario = v.getNom_ven();               
+                Principal principal = new Principal();
+                principal.setVisible(true);
                 this.dispose();
             } else {
                 JOptionPane.showMessageDialog(null, "Correo o contraseña incorrectos");
