@@ -4,7 +4,7 @@ public class Vendedor {
     public int cod_ven;
     public String nom_ven;
     public String correo_ven;
-    public String contr_ven;
+    public String contra_ven;
 
     public int getCod_ven() {
         return cod_ven;
@@ -30,11 +30,11 @@ public class Vendedor {
         this.correo_ven = correo_ven;
     }
 
-    public String getContr_ven() {
-        return contr_ven;
+    public String getContra_ven() {
+        return contra_ven;
     }
 
-    public void setContr_ven(String contr_ven) {
-        this.contr_ven = contr_ven;
+    public void setContra_ven(String contra_ven) {
+        this.contra_ven = contra_ven;
     }
 }

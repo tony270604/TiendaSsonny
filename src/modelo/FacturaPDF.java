@@ -3,25 +3,40 @@ package modelo;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
+import java.io.File;
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.List;
 /**
  *
  * @author MGamero
  */
 public class FacturaPDF {
-    public static void generarFactura(Boleta boleta, Cliente cliente, Vendedor vendedor, List<DetalleBoleta> detalles, String rutaArchivo) throws Exception {
+    public static void generarFactura(Boleta boleta, Cliente cliente, Vendedor vendedor, List<DetalleBoleta> detalles, String nombreArchivo) throws Exception {
+        
+        
+        // Define la ruta donde se guardará el PDF
+        String ruta = "C:\\Users\\MGamero\\Documents\\TiendaSonny_boletasPDF\\" + nombreArchivo; // Cambia esto a la ruta deseada
+        // Crear la carpeta si no existe
+        File carpeta = new File("C:\\Users\\MGamero\\Documents\\TiendaSonny_boletasPDF");
+        if (!carpeta.exists()) {
+            carpeta.mkdirs(); // Crea la carpeta (y padres si es necesario)
+        }
+        
         Document document = new Document();
-        PdfWriter.getInstance(document, new FileOutputStream(rutaArchivo));
+        PdfWriter.getInstance(document, new FileOutputStream(ruta));
         document.open();
-
         // Título
         Font tituloFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18);
-        Paragraph titulo = new Paragraph("Factura N° " + boleta.getNum_bol(), tituloFont);
+        Paragraph titulo = new Paragraph("Factura N° " + String.format("%08d", boleta.getNum_bol()), tituloFont);
         titulo.setAlignment(Element.ALIGN_CENTER);
         document.add(titulo);
+        
+        // Formatear la fecha
+        SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        String fechaFormateada = formatoFecha.format(boleta.getFec_bol());
 
-        document.add(new Paragraph("Fecha: " + boleta.getFec_bol()));
+        document.add(new Paragraph("Fecha: " + fechaFormateada));
         document.add(new Paragraph("Cliente: " + cliente.getNom_cli()));
         document.add(new Paragraph("Vendedor: " + vendedor.getNom_ven()));
         document.add(Chunk.NEWLINE);
