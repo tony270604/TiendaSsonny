@@ -4,6 +4,7 @@ public class Categoria {
     public int cod_cat;
     public String nom_cat;
     public int desc_cat;
+    
 
     public int getCod_cat() {
         return cod_cat;
@@ -20,6 +21,8 @@ public class Categoria {
     public void setNom_cat(String nom_cat) {
         this.nom_cat = nom_cat;
     }
+
+    
 
     public int getDesc_cat() {
         return desc_cat;

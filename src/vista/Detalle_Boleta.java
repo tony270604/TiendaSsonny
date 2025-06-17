@@ -4,11 +4,23 @@
  */
 package vista;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import modelo.Boleta;
+import modelo.Categoria;
 import modelo.Cliente;
+import modelo.DetalleBoleta;
+import modelo.FacturaPDF;
 import modelo.Producto;
+import modelo.ProductoDTO;
+import modeloDao.BoletaDAO;
 import modeloDao.CategoriaDAO;
 import modeloDao.ClienteDAO;
 import modeloDao.ProductoDao;
@@ -22,16 +34,27 @@ public class Detalle_Boleta extends javax.swing.JFrame {
     /**
      * Creates new form Detalle_Boleta
      */
-    
+    private Map<String, ProductoDTO> mapaProductos = new HashMap<>();
 
     public Detalle_Boleta() {
         initComponents();
         cargarClientesEnCombo();
         cargarProductosEnCombo();
-        
+        camposTabla();
+
     }
 
-    
+    private void camposTabla() {
+        DefaultTableModel modelo = new DefaultTableModel();
+        modelo.addColumn("Código");
+        modelo.addColumn("Producto");
+        modelo.addColumn("Cantidad");
+        modelo.addColumn("Precio Unitario");
+        modelo.addColumn("Descuento (%)");
+        modelo.addColumn("Precio Total");
+        tablaRegistroVista.setModel(modelo);
+
+    }
 
     private void cargarClientesEnCombo() {
         ClienteDAO dao = new ClienteDAO();
@@ -43,13 +66,57 @@ public class Detalle_Boleta extends javax.swing.JFrame {
         }
     }
 
+    private void actualizarTotal() {
+        DefaultTableModel modelo = (DefaultTableModel) tablaRegistroVista.getModel();
+        double suma = 0;
+
+        int colPrecioTotal = 5; // Índice de columna Precio Total (empezando en 0)
+
+        for (int i = 0; i < modelo.getRowCount(); i++) {
+            String valor = modelo.getValueAt(i, colPrecioTotal).toString();
+            // Remover posibles símbolos o espacios y convertir a número
+            valor = valor.replace(" ", "").replace("S/", "").replace("$", "").trim();
+            try {
+                suma += Double.parseDouble(valor);
+            } catch (NumberFormatException e) {
+                // Ignorar o manejar error si hay formato extraño
+            }
+        }
+
+        lblTotal.setText(String.format(" S/ %.2f", suma));
+    }
+
     private void cargarProductosEnCombo() {
-        ProductoDao pd = new ProductoDao();
+        //original si errores metodo basico
+        /* ProductoDao pd = new ProductoDao();
         List<Producto> productos = pd.listarProductosBoletas();
         cbxProductos.removeAllItems();
-        cbxProductos.addItem("Seleccionar Producto");
+        cbxProductos.addItem("Selecionar Producto");
         for (Producto p : productos) {
             cbxProductos.addItem(p.getNom_pro());  // comboProductos debe ser de tipo JComboBox<Producto>
+        }*/
+
+ /*ProductoDao pd = new ProductoDao();
+    List<Producto> productos = pd.listarProductosBoletas();
+    cbxProductos.removeAllItems();
+    cbxProductos.addItem("Seleccionar");
+    mapaProductos.clear();
+    for (Producto p : productos) {
+        String nombreMostrar = p.getNom_pro() + " - S/ " + String.format("%.2f", p.getPrec_pro());
+        mapaProductos.put(nombreMostrar, p);
+        cbxProductos.addItem(nombreMostrar);
+    }*/
+        ProductoDao dao = new ProductoDao();
+        List<ProductoDTO> lista = dao.listarProductosConPrecioDescuento();
+
+        mapaProductos.clear();
+        cbxProductos.removeAllItems();
+        cbxProductos.addItem("Seleccionar");
+
+        for (ProductoDTO p : lista) {
+            String texto = p.toString();
+            mapaProductos.put(texto, p);
+            cbxProductos.addItem(texto);
         }
     }
 
@@ -82,9 +149,10 @@ public class Detalle_Boleta extends javax.swing.JFrame {
         tablaRegistroVista = new javax.swing.JTable();
         jLabel7 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jLabel10 = new javax.swing.JLabel();
+        lblTotal = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -112,7 +180,6 @@ public class Detalle_Boleta extends javax.swing.JFrame {
         jLabel5.setText("Adicionar ");
         jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 160, 60, 30));
 
-        cbxProductos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jPanel2.add(cbxProductos, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 170, 190, 40));
 
         jLabel6.setText("Cantidad");
@@ -132,7 +199,7 @@ public class Detalle_Boleta extends javax.swing.JFrame {
         jLabel9.setText("Producto");
         jPanel2.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 190, -1, -1));
 
-        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, 330, 400));
+        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 60, 330, 400));
 
         jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -150,7 +217,7 @@ public class Detalle_Boleta extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tablaRegistroVista);
 
-        jPanel4.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, -1, 173));
+        jPanel4.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 570, 173));
 
         jLabel7.setText("Detalle Boleta");
         jPanel4.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 20, 90, -1));
@@ -158,26 +225,221 @@ public class Detalle_Boleta extends javax.swing.JFrame {
         jButton1.setText("jButton1");
         jPanel4.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(-200, 250, -1, -1));
 
-        jButton3.setText("Eliminar");
-        jPanel4.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 330, -1, -1));
+        btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
+        jPanel4.add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 340, -1, -1));
 
         jButton4.setText("Imprimir");
-        jPanel4.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 330, -1, -1));
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+        jPanel4.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 340, -1, -1));
 
         jLabel10.setText("Precio total :");
-        jPanel4.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 260, -1, -1));
+        jPanel4.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 270, 80, 20));
 
-        jPanel1.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 60, 490, 400));
+        lblTotal.setText("XXXX");
+        jPanel4.add(lblTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 260, 180, 40));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 910, 500));
+        jPanel1.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 60, 620, 400));
+
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1020, 500));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAñadirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAñadirActionPerformed
 
+        DefaultTableModel modelo = (DefaultTableModel) tablaRegistroVista.getModel();
 
+        String seleccion = (String) cbxProductos.getSelectedItem();
+        String cantidadStr = txtCantidad.getText().trim();
+
+        if (seleccion == null || seleccion.equals("Seleccionar") || cantidadStr.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Seleccione un producto y cantidad válida.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        ProductoDTO producto = mapaProductos.get(seleccion);
+        if (producto == null) {
+            JOptionPane.showMessageDialog(this, "Producto no encontrado.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        int cantidad;
+        try {
+            cantidad = Integer.parseInt(cantidadStr);
+            if (cantidad <= 0) {
+                throw new NumberFormatException();
+            }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Cantidad inválida.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        float total = producto.getPrecioConDescuento() * cantidad;
+
+        modelo.addRow(new Object[]{
+            producto.getCodigo(),
+            producto.getNombre(),
+            cantidad,
+            String.format("%.2f", producto.getPrecioUnitario()),
+            producto.getDescuento() + " %",
+            String.format("%.2f", total)
+        });
+
+        actualizarTotal();
+        txtCantidad.setText("");
+        cbxProductos.setSelectedIndex(0);
+        txtCantidad.requestFocus();
+        /*  DefaultTableModel modelo = (DefaultTableModel) tablaRegistroVista.getModel();
+
+    Producto productoSeleccionado = (Producto) cbxProductos.getSelectedItem();
+    String cantidadStr = txtCantidad.getText().trim();
+
+    if (productoSeleccionado == null || cantidadStr.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Seleccione un producto y cantidad válida.");
+        return;
+    }
+
+    int cantidad;
+    try {
+        cantidad = Integer.parseInt(cantidadStr);
+        if (cantidad <= 0) throw new NumberFormatException();
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "Cantidad inválida.");
+        return;
+    }
+
+    float precioUnitario = productoSeleccionado.getPrec_pro();
+    int descuento = productoSeleccionado.getCategoria().getDesc_cat(); // 🚀 aquí se obtiene el descuento
+    float precioConDescuento = precioUnitario * (1 - descuento / 100.0f);
+    float total = precioConDescuento * cantidad;
+
+    modelo.addRow(new Object[]{
+        productoSeleccionado.getCod_pro(),
+        productoSeleccionado.getNom_pro(),
+        precioUnitario,
+        descuento + " %",
+        total
+    });
+
+    txtCantidad.setText("");
+    cbxProductos.setSelectedIndex(0);
+    txtCantidad.requestFocus();
+         */
+ /*
+        // Obtener el modelo de la tabla
+        DefaultTableModel modelo = (DefaultTableModel) tablaRegistroVista.getModel();
+
+        // Obtener los datos de los campos de texto (adaptar nombres según tus variables)
+        String producto = (String) cbxProductos.getSelectedItem();
+        String cantidadStr = txtCantidad.getText().trim();
+
+        // Validar campos no vacíos
+        if (producto.isEmpty() || cantidadStr.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor, complete todos los campos.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Validar que cantidad sea un número entero positivo
+        int cantidad;
+        try {
+            cantidad = Integer.parseInt(cantidadStr);
+            if (cantidad <= 0) {
+                JOptionPane.showMessageDialog(this, "La cantidad debe ser un número positivo.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Cantidad debe ser un número válido.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        // Añadir fila al modelo de la tabla
+        modelo.addRow(new Object[]{producto, cantidad});
+
+        // Limpiar campos
+        cbxProductos.addItem("Seleccionar Producto");
+        txtCantidad.setText("");
+
+        // Opcional: poner el foco en el campo producto para agilizar entrada
+        txtCantidad.requestFocus();
+        
+         */
     }//GEN-LAST:event_btnAñadirActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        // TODO add your handling code here:
+
+        int filaSeleccionada = tablaRegistroVista.getSelectedRow();
+        if (filaSeleccionada != -1) {
+            DefaultTableModel modelo = (DefaultTableModel) tablaRegistroVista.getModel(); // Obtén el modelo de la tabla
+            modelo.removeRow(filaSeleccionada); // Elimina la fila seleccionada del modelo
+            actualizarTotal(); // Actualiza el total después de eliminar
+        } else {
+            JOptionPane.showMessageDialog(this, "Seleccione una fila para eliminar.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+
+     /*   // Validar que tabla no esté vacía, obtener datos de cliente, vendedor, etc.
+        // Paso 3: Extraer lista de detalles desde la tabla visual
+        String clienteSeleccionado = cbxClientes.getSelectedItem().toString(); // o cbxClientes.getSelectedItem().toString();
+        String vendedorSeleccionado = jLabel4.getText(); // o cbxVendedores.getSelectedItem().toString();
+     
+        Cliente clienteObjeto = new Cliente(); // Asegúrate de tener la clase Cliente
+        clienteObjeto.setDni_cli(clienteSeleccionado); // O cualquier otro atributo que necesites
+        Vendedor vendedorObjeto = new Vendedor(); // Asegúrate de tener la clase Vendedor
+        vendedorObjeto.setCodigo(vendedorSeleccionado);
+        List<DetalleBoleta> listaDetalles = new ArrayList<>();
+        DefaultTableModel modelo = (DefaultTableModel) tablaRegistroVista.getModel();
+
+        for (int i = 0; i < modelo.getRowCount(); i++) {
+            String codPro = (String) modelo.getValueAt(i, 0);
+            String nombrePro = (String) modelo.getValueAt(i, 1);
+            int cantidad = Integer.parseInt(modelo.getValueAt(i, 2).toString());
+            BigDecimal precioUnitario = new BigDecimal(modelo.getValueAt(i, 3).toString());
+            String descuentoStr = modelo.getValueAt(i, 4).toString().replace("%", "").trim();
+            double descuento = Double.parseDouble(descuentoStr);
+            BigDecimal subtotal = new BigDecimal(modelo.getValueAt(i, 5).toString());
+
+            // Crear objeto DetalleBoleta con datos completos
+            DetalleBoleta detalle = new DetalleBoleta(0, codPro, nombrePro, precioUnitario, cantidad, descuento, subtotal);
+            listaDetalles.add(detalle);
+        }
+
+        // Paso 2: Calcular total
+        BigDecimal totalFactura = BigDecimal.ZERO;
+        for (DetalleBoleta d : listaDetalles) {
+            totalFactura = totalFactura.add(d.getSubtotal());
+        }
+
+        // Crear objeto boleta con datos generales (fecha, cliente, vendedor, total)
+        Boleta boleta = new Boleta();
+        boleta.setFec_bol(new Date());
+        boleta.setDni_cli(clienteSeleccionado);   // Obtenlo según tu UI
+        boleta.setCod_ven(vendedorSeleccionado);  // Igual
+        boleta.setTotal_bol(totalFactura);
+
+        // Paso 3 y 4: Guardar en base y generar PDF (usamos tu DAO y PDF generator)
+        try {
+            BoletaDAO dao = new BoletaDAO();
+            dao.guardarBoletaConDetalles(boleta, listaDetalles);
+
+            FacturaPDF.generarFactura(boleta, clienteObjeto, vendedorObjeto, listaDetalles, "factura_" + boleta.getNum_bol() + ".pdf");
+
+            JOptionPane.showMessageDialog(this, "Factura guardada e impresa correctamente.");
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error al procesar la factura: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }*/
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -224,10 +486,10 @@ public class Detalle_Boleta extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAñadir;
+    private javax.swing.JButton btnEliminar;
     private javax.swing.JComboBox<String> cbxClientes;
     private javax.swing.JComboBox<String> cbxProductos;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -244,6 +506,7 @@ public class Detalle_Boleta extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JLabel lblTotal;
     private javax.swing.JTable tablaRegistroVista;
     private javax.swing.JTextField txtCantidad;
     // End of variables declaration//GEN-END:variables
