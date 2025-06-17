@@ -180,7 +180,6 @@ public class Login extends javax.swing.JFrame {
         try {
             if (vd.verificarLogin(v)) {
                 JOptionPane.showMessageDialog(null, "Inicio de sesión exitoso");
-                // new PruebaProducto(v.getNom_ven()).setVisible(true);
                 NombreUsuario.nombre_Usuario = v.getNom_ven();               
                 Principal principal = new Principal();
                 principal.setVisible(true);
