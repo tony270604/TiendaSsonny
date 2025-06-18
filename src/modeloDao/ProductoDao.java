@@ -16,39 +16,46 @@ import modelo.Producto;
 public class ProductoDao {
 
     Producto p;
-    
+
     public boolean agregarProducto(Producto p, int cod_cat) throws SQLException {
-        String sqlProducto = "INSERT INTO producto (cod_pro, nom_pro, stock_pro, prec_pro) VALUES (?, ?, ?, ?)";
+        String sqlProducto = "INSERT INTO producto (nom_pro, stock_pro, prec_pro) VALUES (?, ?, ?)";
         String sqlCategoriaProducto = "INSERT INTO categoriaproducto (cod_cat, cod_pro) VALUES (?, ?)";
 
         try (Connection con = Conexion.getConexion()) {
             con.setAutoCommit(false);
 
-            try (PreparedStatement pstProducto = con.prepareStatement(sqlProducto); PreparedStatement pstCategoria = con.prepareStatement(sqlCategoriaProducto)) {
-
-                // Inserta el producto
-                pstProducto.setString(1, p.cod_pro);
-                pstProducto.setString(2, p.nom_pro);
-                pstProducto.setInt(3, p.stock_pro);
-                pstProducto.setFloat(4, p.prec_pro);
+            try (PreparedStatement pstProducto = con.prepareStatement(sqlProducto, Statement.RETURN_GENERATED_KEYS); PreparedStatement pstCategoria = con.prepareStatement(sqlCategoriaProducto)) {
+                // 1. Insertar producto
+                pstProducto.setString(1, p.nom_pro);
+                pstProducto.setInt(2, p.stock_pro);
+                pstProducto.setFloat(3, p.prec_pro);
                 pstProducto.executeUpdate();
 
-                // Inserta la relación producto-categoría
+                // 2. Obtener el ID generado
+                ResultSet rs = pstProducto.getGeneratedKeys();
+                int cod_pro_generado = -1;
+                if (rs.next()) {
+                    cod_pro_generado = rs.getInt(1);
+                } else {
+                    throw new SQLException("No se pudo obtener el ID del producto insertado.");
+                }
+
+                // 3. Insertar en categoriaproducto usando el ID generado
                 pstCategoria.setInt(1, cod_cat);
-                pstCategoria.setString(2, p.cod_pro);
+                pstCategoria.setInt(2, cod_pro_generado);
                 pstCategoria.executeUpdate();
 
                 con.commit();
                 return true;
 
             } catch (SQLException e) {
-                con.rollback(); // Deshace todo si algo falla
+                con.rollback();
                 JOptionPane.showMessageDialog(null, "Error al agregar producto: " + e.getMessage());
                 return false;
             }
         }
     }
-    
+
     public DefaultTableModel listarProducto() {
         DefaultTableModel modelo = new DefaultTableModel();
         modelo.addColumn("cod_pro");
@@ -170,12 +177,12 @@ public class ProductoDao {
                 pstProducto.setString(1, p.nom_pro);
                 pstProducto.setInt(2, p.stock_pro);
                 pstProducto.setFloat(3, p.prec_pro);
-                pstProducto.setString(4, p.cod_pro);
+                pstProducto.setInt(4, p.cod_pro);
                 pstProducto.executeUpdate();
 
                 // Actualiza la categoría asociada
                 pstCategoria.setInt(1, cod_cat);
-                pstCategoria.setString(2, p.cod_pro);
+                pstCategoria.setInt(2, p.cod_pro);
                 pstCategoria.executeUpdate();
 
                 con.commit();
@@ -189,7 +196,7 @@ public class ProductoDao {
         }
     }
 
-    public boolean eliminarProducto(String cod_pro) throws SQLException {
+    public boolean eliminarProducto(int cod_pro) throws SQLException {
         String sqlCategoria = "DELETE FROM CategoriaProducto WHERE cod_pro = ?";
         String sqlProducto = "DELETE FROM Producto         WHERE cod_pro = ?";
 
@@ -198,10 +205,10 @@ public class ProductoDao {
 
             try (PreparedStatement pstCat = con.prepareStatement(sqlCategoria); PreparedStatement pstProd = con.prepareStatement(sqlProducto)) {
 
-                pstCat.setString(1, cod_pro);
+                pstCat.setInt(1, cod_pro);
                 pstCat.executeUpdate();
 
-                pstProd.setString(1, cod_pro);
+                pstProd.setInt(1, cod_pro);
                 int rows = pstProd.executeUpdate();
 
                 con.commit();
@@ -218,19 +225,16 @@ public class ProductoDao {
         }
     }
 
-    
     //LISTAR PRODUCTO COMBO-BOLETA
     public List<Producto> listarProductosBoletas() {
         List<Producto> lista = new ArrayList<>();
         String sql = "SELECT * FROM producto";
 
-        try (Connection con = Conexion.getConexion();
-             PreparedStatement ps = con.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        try (Connection con = Conexion.getConexion(); PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
                 Producto p = new Producto();
-                p.setCod_pro(rs.getString("cod_pro"));
+                p.setCod_pro(rs.getInt("cod_pro"));
                 p.setNom_pro(rs.getString("nom_pro"));
                 p.setStock_pro(rs.getInt("stock_pro"));
                 p.setPrec_pro(rs.getFloat("prec_pro"));
@@ -243,20 +247,17 @@ public class ProductoDao {
 
         return lista;
     }
-    
-    
+
     public List<ProductoDTO> listarProductosConPrecioDescuento() {
         List<ProductoDTO> productos = new ArrayList<>();
-        String sql = "SELECT p.cod_pro, p.nom_pro, p.prec_pro, c.desc_cat, " +
-                     "p.prec_pro * (1 - c.desc_cat/100) AS precio_con_descuento " +
-                     "FROM producto p " +
-                     "JOIN categoriaproducto cp ON p.cod_pro = cp.cod_pro " +
-                     "JOIN categoria c ON cp.cod_cat = c.cod_cat " +
-                     "ORDER BY p.nom_pro";
+        String sql = "SELECT p.cod_pro, p.nom_pro, p.prec_pro, c.desc_cat, "
+                + "p.prec_pro * (1 - c.desc_cat/100) AS precio_con_descuento "
+                + "FROM producto p "
+                + "JOIN categoriaproducto cp ON p.cod_pro = cp.cod_pro "
+                + "JOIN categoria c ON cp.cod_cat = c.cod_cat "
+                + "ORDER BY p.nom_pro";
 
-        try (Connection conn = Conexion.getConexion();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = Conexion.getConexion(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
                 String codigo = rs.getString("cod_pro");

@@ -2,17 +2,17 @@ package modelo;
 
 public class Producto {
 
-    public String cod_pro;
+    public int cod_pro;
     public String nom_pro;
     public int stock_pro;
     public float prec_pro;
     private Categoria categoria;
 
-    public String getCod_pro() {
+    public int getCod_pro() {
         return cod_pro;
     }
 
-    public void setCod_pro(String cod_pro) {
+    public void setCod_pro(int cod_pro) {
         this.cod_pro = cod_pro;
     }
 

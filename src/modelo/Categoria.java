@@ -22,8 +22,6 @@ public class Categoria {
         this.nom_cat = nom_cat;
     }
 
-    
-
     public int getDesc_cat() {
         return desc_cat;
     }
