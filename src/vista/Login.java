@@ -1,25 +1,32 @@
 package vista;
 
+import java.awt.Panel;
 import java.awt.event.KeyEvent;
 import javax.swing.JOptionPane;
 import modelo.Vendedor;
 import modeloDao.VendedorDAO;
 import java.sql.SQLException;
+import javax.swing.JLayeredPane;
 import modelo.NombreUsuario;
+
 public class Login extends javax.swing.JFrame {
 
     public Login() {
-        initComponents();
-        this.setLocationRelativeTo(null);
+        initComponents(); 
+        this.setLocationRelativeTo(null); 
+        //Para superponer el jframa
+        JLayeredPane layeredPane = getLayeredPane();
+        layeredPane.add(Login, JLayeredPane.POPUP_LAYER);
     }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
+        Celeste = new javax.swing.JPanel();
+        Morado = new javax.swing.JPanel();
+        jTextArea1 = new javax.swing.JTextArea();
+        Login = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -30,31 +37,41 @@ public class Login extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel1.setBackground(new java.awt.Color(102, 204, 255));
-        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        Celeste.setBackground(new java.awt.Color(102, 204, 255));
+        Celeste.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        getContentPane().add(Celeste, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 300, 480));
+        Celeste.getAccessibleContext().setAccessibleName("");
 
-        jPanel2.setBackground(new java.awt.Color(153, 153, 255));
-        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        Morado.setBackground(new java.awt.Color(153, 153, 255));
+        Morado.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
-        jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jTextArea1.setText("vendedor1@tienda.com\npass1234\n");
+        Morado.add(jTextArea1, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 420, 140, 40));
+
+        getContentPane().add(Morado, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 0, 300, 480));
+
+        Login.setBackground(new java.awt.Color(255, 255, 255));
+        Login.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
+        Login.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 3, 36)); // NOI18N
         jLabel1.setText("LOGIN");
-        jPanel3.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(71, 25, 121, 44));
+        Login.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 10, 121, 44));
 
         jLabel2.setText("Correo:");
-        jPanel3.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(36, 98, 44, -1));
+        Login.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(36, 98, 44, -1));
 
         jLabel3.setText("Contraseña:");
-        jPanel3.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(36, 172, 72, -1));
+        Login.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(36, 172, 72, -1));
 
         txtCorreo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtCorreoActionPerformed(evt);
             }
         });
-        jPanel3.add(txtCorreo, new org.netbeans.lib.awtextra.AbsoluteConstraints(36, 132, 207, -1));
+        Login.add(txtCorreo, new org.netbeans.lib.awtextra.AbsoluteConstraints(36, 130, 210, 25));
 
         btnIngresar.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
         btnIngresar.setText("Ingresar");
@@ -63,7 +80,7 @@ public class Login extends javax.swing.JFrame {
                 btnIngresarActionPerformed(evt);
             }
         });
-        jPanel3.add(btnIngresar, new org.netbeans.lib.awtextra.AbsoluteConstraints(86, 258, 91, -1));
+        Login.add(btnIngresar, new org.netbeans.lib.awtextra.AbsoluteConstraints(86, 258, 91, -1));
 
         txtContra.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -75,13 +92,9 @@ public class Login extends javax.swing.JFrame {
                 txtContraKeyPressed(evt);
             }
         });
-        jPanel3.add(txtContra, new org.netbeans.lib.awtextra.AbsoluteConstraints(36, 200, 207, -1));
+        Login.add(txtContra, new org.netbeans.lib.awtextra.AbsoluteConstraints(36, 200, 210, 25));
 
-        jPanel2.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 70, 280, 330));
-
-        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(105, 0, 510, 470));
-
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 615, -1));
+        getContentPane().add(Login, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 70, 280, 340));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -112,7 +125,7 @@ public class Login extends javax.swing.JFrame {
         try {
             if (vd.verificarLogin(v)) {
                 JOptionPane.showMessageDialog(null, "Inicio de sesión exitoso");
-                NombreUsuario.nombre_Usuario = v.getNom_ven();               
+                NombreUsuario.nombre_Usuario = v.getNom_ven();
                 Principal principal = new Principal();
                 principal.setVisible(true);
                 this.dispose();
@@ -161,13 +174,14 @@ public class Login extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel Celeste;
+    private javax.swing.JPanel Login;
+    private javax.swing.JPanel Morado;
     private javax.swing.JButton btnIngresar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
+    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JPasswordField txtContra;
     private javax.swing.JTextField txtCorreo;
     // End of variables declaration//GEN-END:variables
