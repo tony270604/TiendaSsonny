@@ -1,25 +1,17 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package modelo;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
-/**
- *
- * @author MGamero
- */
 public class Boleta {
-    private int num_bol;         // Si es auto-increment, puede omitirse en constructor
+    private int num_bol;        
     private Date fec_bol;
     private BigDecimal total_bol;
     private String dni_cli;
     private String cod_ven;
     
     public Boleta() {
-        // Puedes inicializar valores por defecto si lo deseas
+        
     }
 
     public Boleta(Date fec_bol, BigDecimal total_bol, String dni_cli, String cod_ven) {     

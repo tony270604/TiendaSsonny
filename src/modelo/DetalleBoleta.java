@@ -5,12 +5,12 @@ import java.math.BigDecimal;
 
 
 public class DetalleBoleta {
-    private int num_bol;        // número de boleta para vincular
-    private String cod_pro;     // código del producto
-    private String nombreProducto; // nombre del producto
-    private BigDecimal precioUnitario; // precio unitario del producto
-    private int can;            // cantidad
-    private double descuento;    // descuento aplicado
+    private int num_bol;        
+    private String cod_pro;    
+    private String nombreProducto; 
+    private BigDecimal precioUnitario; 
+    private int can;            
+    private double descuento;    
     private BigDecimal subtotal;
 
     public DetalleBoleta(int num_bol, String cod_pro, String nombreProducto, BigDecimal precioUnitario, int can, double descuento, BigDecimal subtotal) {

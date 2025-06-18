@@ -1,4 +1,3 @@
-
 package modeloDao;
 
 import java.sql.Statement;
@@ -7,19 +6,19 @@ import java.sql.PreparedStatement;
 import java.sql.Connection;
 import confi.Conexion;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import modelo.Boleta;
 import modelo.DetalleBoleta;
 
 public class BoletaDAO {
-    
+
     // Inserta una boleta y devuelve el número generado (num_bol)
     public int insertarBoleta(Boleta boleta) throws SQLException {
         String sql = "INSERT INTO boleta (fec_bol, total_bol, dni_cli, cod_ven) VALUES (?, ?, ?, ?)";
         int numBoleta = -1;
 
-        try (Connection conn = Conexion.getConexion();
-             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection conn = Conexion.getConexion(); PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             conn.setAutoCommit(false);  // inicio transacción
 
@@ -47,13 +46,12 @@ public class BoletaDAO {
             return numBoleta;
         }
     }
-    
+
     // Inserta la lista de detalles para una boleta
     public void insertarDetalles(int numBoleta, List<DetalleBoleta> listaDetalles) throws SQLException {
         String sql = "INSERT INTO detalleboleta (num_bol, cod_pro, can) VALUES (?, ?, ?)";
 
-        try (Connection conn = Conexion.getConexion();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = Conexion.getConexion(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             conn.setAutoCommit(false);
 
@@ -121,4 +119,90 @@ public class BoletaDAO {
             }
         }
     }
+
+    public void eliminarBoleta(int numBol) throws SQLException {
+        String sqlDetalle = "SELECT cod_pro, can FROM detalleboleta WHERE num_bol = ?";
+        String sqlActualizarStock = "UPDATE producto SET stock_pro = stock_pro + ? WHERE cod_pro = ?";
+        String sqlEliminarDetalle = "DELETE FROM detalleboleta WHERE num_bol = ?";
+        String sqlEliminarBoleta = "DELETE FROM boleta WHERE num_bol = ?";
+
+        try (Connection conn = Conexion.getConexion()) {
+            conn.setAutoCommit(false);
+
+            try (
+                    PreparedStatement psDetalle = conn.prepareStatement(sqlDetalle); PreparedStatement psActualizarStock = conn.prepareStatement(sqlActualizarStock); PreparedStatement psEliminarDetalle = conn.prepareStatement(sqlEliminarDetalle); PreparedStatement psEliminarBoleta = conn.prepareStatement(sqlEliminarBoleta)) {
+                System.out.println("Iniciando eliminación boleta: " + numBol);
+
+                // Obtener productos y cantidades de la boleta
+                psDetalle.setInt(1, numBol);
+                ResultSet rs = psDetalle.executeQuery();
+
+                while (rs.next()) {
+                    String codPro = rs.getString("cod_pro");
+                    int cantidad = rs.getInt("can");
+                    System.out.println("Actualizando stock para producto: " + codPro + " cantidad: " + cantidad);
+
+                    psActualizarStock.setInt(1, cantidad);
+                    psActualizarStock.setString(2, codPro);
+                    psActualizarStock.executeUpdate();
+                }
+
+                // Eliminar detalles
+                psEliminarDetalle.setInt(1, numBol);
+                psEliminarDetalle.executeUpdate();
+
+                // Eliminar boleta
+                psEliminarBoleta.setInt(1, numBol);
+                int filasEliminadas = psEliminarBoleta.executeUpdate();
+                System.out.println("Filas boleta eliminadas: " + filasEliminadas);
+
+                conn.commit();
+                System.out.println("Eliminación exitosa y commit realizado.");
+
+            } catch (SQLException e) {
+                conn.rollback();
+                System.out.println("Error, rollback realizado.");
+                throw e;
+            }
+        }
+    }
+    
+     public List<Boleta> listarBoletas() {
+        List<Boleta> listaBoletas = new ArrayList<>();
+        String sql = "SELECT num_bol, fec_bol, total_bol, dni_cli, cod_ven FROM boleta ORDER BY num_bol DESC";
+        try (Connection conn = Conexion.getConexion(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Boleta boleta = new Boleta();
+                boleta.setNum_bol(rs.getInt("num_bol"));
+                boleta.setFec_bol(rs.getDate("fec_bol"));
+                boleta.setTotal_bol(rs.getBigDecimal("total_bol"));
+                boleta.setDni_cli(rs.getString("dni_cli"));
+                boleta.setCod_ven(rs.getString("cod_ven"));
+                listaBoletas.add(boleta);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return listaBoletas;
+    }
+     
+     public List<Boleta> obtenerTodasLasBoletas() throws SQLException {
+        List<Boleta> lista = new ArrayList<>();
+        String sql = "SELECT * FROM boleta";
+
+        try (Connection con = Conexion.getConexion(); PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Boleta b = new Boleta();
+                b.setNum_bol(rs.getInt("num_bol"));
+                b.setDni_cli(rs.getString("dni_cli"));
+                b.setFec_bol(rs.getDate("fec_bol"));
+                b.setTotal_bol(rs.getBigDecimal("total_bol"));
+                lista.add(b);
+            }
+        }
+
+        return lista;
+    }
+
 }
