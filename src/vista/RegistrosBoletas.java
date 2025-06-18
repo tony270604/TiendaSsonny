@@ -11,6 +11,7 @@ import modelo.Boleta;
 import modeloDao.BoletaDAO;
 import java.sql.*;
 import java.util.ArrayList;
+import modeloDao.VendedorDAO;
 import vista.Principal;
 
 /**
@@ -36,16 +37,16 @@ public class RegistrosBoletas extends javax.swing.JFrame {
         modelo.addColumn("N° Boleta");
         modelo.addColumn("Fecha");
         modelo.addColumn("DNI");
-        modelo.addColumn("Nombre Cliente");
-        modelo.addColumn("Nombre Vendedor");
+        modelo.addColumn("Vendedor");
+        modelo.addColumn("Precio total");
         tablaBoletas.setModel(modelo);
 
     }
-    
-    private void rellenarcombo(){
-    cbxFiltroBusqueda.removeAllItems();
-cbxFiltroBusqueda.addItem("DNI");
-cbxFiltroBusqueda.addItem("N° Boleta");
+
+    private void rellenarcombo() {
+        cbxFiltroBusqueda.removeAllItems();
+        cbxFiltroBusqueda.addItem("DNI");
+        cbxFiltroBusqueda.addItem("N° Boleta");
     }
 
     private void cargarBoletas() {
@@ -67,33 +68,31 @@ cbxFiltroBusqueda.addItem("N° Boleta");
     }
     
     private void cargarTabla(List<Boleta> lista) {
-    DefaultTableModel modelo = (DefaultTableModel) tablaBoletas.getModel();
-    modelo.setRowCount(0); // Limpiar tabla
-
-    for (Boleta b : lista) {
-        modelo.addRow(new Object[]{
-            String.format("%08d", b.getNum_bol()),
+        DefaultTableModel modelo = (DefaultTableModel) tablaBoletas.getModel();
+        modelo.setRowCount(0); // Limpiar tabla
+              
+        for (Boleta b : lista) {                     
+            modelo.addRow(new Object[]{
+                String.format("%08d", b.getNum_bol()),
                 b.getFec_bol(),
                 b.getDni_cli(),
                 b.getCod_ven(),
-                b.getTotal_bol()
-        });
+                b.getTotal_bol()  
+            });
+        }
     }
-}
 
-    
+
     private void buscarBoletas() {
-    String texto = txtBuscar.getText();
-    String filtro = cbxFiltroBusqueda.getSelectedItem().toString();
-    List<Boleta> listaFiltrada = new ArrayList<>();
+        String texto = txtBuscar.getText().trim();
+        String filtro = cbxFiltroBusqueda.getSelectedItem().toString();
+        List<Boleta> listaFiltrada = new ArrayList<>();
 
-    try {
         BoletaDAO dao = new BoletaDAO();
-        List<Boleta> todas = dao.obtenerTodasLasBoletas();
-
+        List<Boleta> todas = dao.listarBoletas();
         for (Boleta b : todas) {
             if (filtro.equals("DNI")) {
-                if (String.valueOf(b.getDni_cli()).startsWith(texto)) {
+                if (b.getDni_cli().startsWith(texto)) {
                     listaFiltrada.add(b);
                 }
             } else if (filtro.equals("N° Boleta")) {
@@ -102,16 +101,8 @@ cbxFiltroBusqueda.addItem("N° Boleta");
                 }
             }
         }
-
         cargarTabla(listaFiltrada);
-
-    } catch (SQLException e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(this, "Error al buscar: " + e.getMessage());
     }
-}
-
-
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -130,17 +121,21 @@ cbxFiltroBusqueda.addItem("N° Boleta");
         jButton1 = new javax.swing.JButton();
         ELIMINAR_BOLETA = new javax.swing.JButton();
         cbxFiltroBusqueda = new javax.swing.JComboBox<>();
-        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         txtBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtBuscarKeyReleased(evt);
             }
         });
+        jPanel1.add(txtBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 40, 230, 50));
 
         jLabel1.setText("busacar factura por numero de factura o DNI cliente");
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 40, 290, 50));
 
         tablaBoletas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -155,12 +150,15 @@ cbxFiltroBusqueda.addItem("N° Boleta");
         ));
         jScrollPane1.setViewportView(tablaBoletas);
 
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 130, 680, 240));
+
         jButton1.setText("Regresar");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
+        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 410, 110, 50));
 
         ELIMINAR_BOLETA.setText("Eliminar Boleta");
         ELIMINAR_BOLETA.addActionListener(new java.awt.event.ActionListener() {
@@ -168,60 +166,12 @@ cbxFiltroBusqueda.addItem("N° Boleta");
                 ELIMINAR_BOLETAActionPerformed(evt);
             }
         });
+        jPanel1.add(ELIMINAR_BOLETA, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 410, 120, 50));
 
         cbxFiltroBusqueda.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jPanel1.add(cbxFiltroBusqueda, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 40, 110, 50));
 
-        jButton2.setText("jButton2");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(70, 70, 70)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(10, 10, 10)
-                .addComponent(cbxFiltroBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(20, 20, 20)
-                .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(70, 70, 70)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 680, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(220, 220, 220)
-                .addComponent(ELIMINAR_BOLETA, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(69, 69, 69)
-                .addComponent(jButton2))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(40, 40, 40)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cbxFiltroBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(40, 40, 40)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(40, 40, 40)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(ELIMINAR_BOLETA, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2)))
-        );
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 800, 480));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -235,34 +185,34 @@ cbxFiltroBusqueda.addItem("N° Boleta");
 
     private void ELIMINAR_BOLETAActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ELIMINAR_BOLETAActionPerformed
 
-       int filaSeleccionada = tablaBoletas.getSelectedRow();
-    if (filaSeleccionada == -1) {
-        JOptionPane.showMessageDialog(this, "Seleccione una boleta para eliminar.");
-        return;
-    }
-
-    String numBolStr = tablaBoletas.getValueAt(filaSeleccionada, 0).toString();
-    int numBol = Integer.parseInt(numBolStr);
-
-    // Verifica que el número de boleta no sea 0
-    if (numBol <= 0) {
-        JOptionPane.showMessageDialog(this, "Número de boleta no válido.");
-        return;
-    }
-
-    int opcion = JOptionPane.showConfirmDialog(this, "¿Está seguro que desea eliminar la boleta #" + numBolStr + "?", "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
-
-    if (opcion == JOptionPane.YES_OPTION) {
-        try {
-            BoletaDAO dao = new BoletaDAO();
-            dao.eliminarBoleta(numBol);
-            JOptionPane.showMessageDialog(this, "Boleta eliminada correctamente.");
-            cargarBoletas(); // Refresca la tabla
-        } catch (SQLException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error al eliminar la boleta: " + e.getMessage());
+        int filaSeleccionada = tablaBoletas.getSelectedRow();
+        if (filaSeleccionada == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione una boleta para eliminar.");
+            return;
         }
-    }
+
+        String numBolStr = tablaBoletas.getValueAt(filaSeleccionada, 0).toString();
+        int numBol = Integer.parseInt(numBolStr);
+
+        // Verifica que el número de boleta no sea 0
+        if (numBol <= 0) {
+            JOptionPane.showMessageDialog(this, "Número de boleta no válido.");
+            return;
+        }
+
+        int opcion = JOptionPane.showConfirmDialog(this, "¿Está seguro que desea eliminar la boleta #" + numBolStr + "?", "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
+
+        if (opcion == JOptionPane.YES_OPTION) {
+            try {
+                BoletaDAO dao = new BoletaDAO();
+                dao.eliminarBoleta(numBol);
+                JOptionPane.showMessageDialog(this, "Boleta eliminada correctamente.");
+                cargarBoletas(); // Refresca la tabla
+            } catch (SQLException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error al eliminar la boleta: " + e.getMessage());
+            }
+        }
 
 
     }//GEN-LAST:event_ELIMINAR_BOLETAActionPerformed
@@ -311,7 +261,6 @@ cbxFiltroBusqueda.addItem("N° Boleta");
     private javax.swing.JButton ELIMINAR_BOLETA;
     private javax.swing.JComboBox<String> cbxFiltroBusqueda;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
