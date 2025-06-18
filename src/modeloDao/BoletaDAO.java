@@ -178,6 +178,8 @@ public class BoletaDAO {
                 boleta.setTotal_bol(rs.getBigDecimal("total_bol"));
                 boleta.setDni_cli(rs.getString("dni_cli"));
                 boleta.setCod_ven(rs.getString("cod_ven"));
+                // Imprimir para depuración
+               System.out.println("Cargando boleta: " + boleta.getNum_bol() + ", Código de vendedor: " + boleta.getCod_ven());
                 listaBoletas.add(boleta);
             }
         } catch (SQLException e) {
@@ -186,6 +188,9 @@ public class BoletaDAO {
         return listaBoletas;
     }
      
+     
+     
+     //creo que est metodo no afecta a ningun codigo
      public List<Boleta> obtenerTodasLasBoletas() throws SQLException {
         List<Boleta> lista = new ArrayList<>();
         String sql = "SELECT * FROM boleta";
