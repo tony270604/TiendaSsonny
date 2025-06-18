@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelo.Categoria;
+import modelo.NombreUsuario;
 import modelo.Producto;
 import modeloDao.CategoriaDAO;
 import modeloDao.ProductoDao;
@@ -13,17 +14,16 @@ public class PruebaProducto extends javax.swing.JFrame {
 
     public PruebaProducto() {
         initComponents();
-    }
-
-    public PruebaProducto(String nom_ven) {
-        initComponents();
-        jblNombreVendedor.setText("Bienvenido " + nom_ven);
+        jblNombreVendedor.setText("Bienvenido: " + NombreUsuario.nombre_Usuario);
         //CENTRAR EL JFRAME 
         this.setLocationRelativeTo(null);
         cargaCombo();
         ProductoDao pd = new ProductoDao();
         DefaultTableModel modelo = pd.listarProducto();
         tabla1.setModel(modelo);
+        txtNomPro.requestFocusInWindow();
+        txtCodPro.setEnabled(false);
+
     }
 
     Producto p = new Producto();
@@ -38,7 +38,7 @@ public class PruebaProducto extends javax.swing.JFrame {
         txtStockPro.setText(null);
         cbxCat.setSelectedIndex(0);
     }
-    
+
     public void cargaCombo() {
         cbxCat.removeAllItems();
         cbxCat.addItem("Elegir");
@@ -57,6 +57,7 @@ public class PruebaProducto extends javax.swing.JFrame {
         btnEditarPro = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
         btnSelecionar = new javax.swing.JButton();
+        btnVolver = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -112,6 +113,13 @@ public class PruebaProducto extends javax.swing.JFrame {
             }
         });
 
+        btnVolver.setText("Volver");
+        btnVolver.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVolverActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -122,7 +130,8 @@ public class PruebaProducto extends javax.swing.JFrame {
                     .addComponent(btnAgregar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnEditarPro, javax.swing.GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE)
                     .addComponent(btnEliminar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnSelecionar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnSelecionar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnVolver, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -130,13 +139,15 @@ public class PruebaProducto extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btnSelecionar)
-                .addGap(29, 29, 29)
+                .addGap(18, 18, 18)
                 .addComponent(btnAgregar)
-                .addGap(29, 29, 29)
+                .addGap(18, 18, 18)
                 .addComponent(btnEditarPro)
-                .addGap(34, 34, 34)
+                .addGap(18, 18, 18)
                 .addComponent(btnEliminar)
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(btnVolver)
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Campos", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 3, 12))); // NOI18N
@@ -148,6 +159,9 @@ public class PruebaProducto extends javax.swing.JFrame {
         jLabel3.setText("stock_pro");
 
         jLabel4.setText("pre_pro");
+
+        txtCodPro.setEditable(false);
+        txtCodPro.setBackground(new java.awt.Color(204, 204, 204));
 
         jLabel7.setText("categoria");
 
@@ -264,6 +278,7 @@ public class PruebaProducto extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jPanel5.setBackground(new java.awt.Color(255, 255, 255));
         jPanel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         jblNombreVendedor.setFont(new java.awt.Font("Verdana", 3, 14)); // NOI18N
@@ -274,8 +289,8 @@ public class PruebaProducto extends javax.swing.JFrame {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jblNombreVendedor, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jblNombreVendedor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -338,42 +353,61 @@ public class PruebaProducto extends javax.swing.JFrame {
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
 
         try {
-            int stock = Integer.parseInt(txtStockPro.getText());
-            float precio = Float.parseFloat(txtPreCod.getText());
+            if (txtStockPro.getText().trim().isEmpty()
+                    || txtPreCod.getText().trim().isEmpty()
+                    || txtNomPro.getText().trim().isEmpty()) {
+
+                JOptionPane.showMessageDialog(null, "El nombre no puede estar vacío.", 
+                        "Error", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            int stock = Integer.parseInt(txtStockPro.getText().trim());
+            float precio = Float.parseFloat(txtPreCod.getText().trim());
+
+            // Solo se obtiene el código si no está vacío
+            int cod = 0;
+            if (!txtCodPro.getText().trim().isEmpty()) {
+                cod = Integer.parseInt(txtCodPro.getText().trim());
+                p.setCod_pro(cod);
+            }
+
             String categoria = cbxCat.getSelectedItem().toString();
 
             if (stock < 0 || precio < 0) {
-                JOptionPane.showMessageDialog(null, "El stock y/o el precio no pueden ser negativos.");
+                JOptionPane.showMessageDialog(null, "El stock y/o el precio no pueden ser negativos..", 
+                        "Advertencia", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
             int cod_cat = -1;
-
             if (!categoria.equals("Elegir")) {
                 String[] partes = categoria.split("-");
                 cod_cat = Integer.parseInt(partes[0].trim());
             }
 
-            p.setCod_pro(txtCodPro.getText());
             p.setNom_pro(txtNomPro.getText());
             p.setStock_pro(stock);
             p.setPrec_pro(precio);
+
             boolean exito = pd.agregarProducto(p, cod_cat);
 
             if (exito) {
-                JOptionPane.showInternalMessageDialog(null, "Se registro correctamente el Producto.",
+                JOptionPane.showInternalMessageDialog(null, "Se registró correctamente el Producto.",
                         "Registro exitoso!!", JOptionPane.INFORMATION_MESSAGE);
                 limpiarCajas();
                 DefaultTableModel modelo = pd.listarProducto();
                 tabla1.setModel(modelo);
             } else {
-                JOptionPane.showMessageDialog(null, "No se pudo agregar el producto.");
+                JOptionPane.showInternalMessageDialog(null, "No se pudo agregar el producto.",
+                        "Registro exitoso!!", JOptionPane.ERROR_MESSAGE);
             }
 
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(null, "Stock o precio inválido. Asegúrate de ingresar números.");
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error en la base de datos: " + e.getMessage());
+            JOptionPane.showInternalMessageDialog(null, "Error en la base de datos: " + e.getMessage(),
+                        "Registro exitoso!!", JOptionPane.ERROR_MESSAGE);
         }
 
 
@@ -397,7 +431,7 @@ public class PruebaProducto extends javax.swing.JFrame {
             String categoriaTabla = tabla1.getValueAt(fila, 4).toString();
 
             for (int i = 0; i < cbxCat.getItemCount(); i++) {
-                String item = cbxCat.getItemAt(i); 
+                String item = cbxCat.getItemAt(i);
 
                 String[] partes = item.split("-", 2);
 
@@ -413,7 +447,7 @@ public class PruebaProducto extends javax.swing.JFrame {
 
     private void btnEditarProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarProActionPerformed
         String categoria = cbxCat.getSelectedItem().toString();
-
+        int cod = Integer.parseInt(txtCodPro.getText());
         if (txtCodPro.getText() == null || txtCodPro.getText().trim().isEmpty()
                 || txtNomPro.getText() == null || txtNomPro.getText().trim().isEmpty()
                 || txtStockPro.getText() == null || txtStockPro.getText().trim().isEmpty()
@@ -433,7 +467,7 @@ public class PruebaProducto extends javax.swing.JFrame {
             cod_cat = Integer.parseInt(partes[0].trim());
         }
 
-        p.setCod_pro(txtCodPro.getText());
+        p.setCod_pro(cod);
         p.setNom_pro(txtNomPro.getText());
         p.setStock_pro(Integer.parseInt(txtStockPro.getText()));
         p.setPrec_pro(Float.parseFloat(txtPreCod.getText()));
@@ -453,6 +487,7 @@ public class PruebaProducto extends javax.swing.JFrame {
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
         String cod = txtCodPro.getText();
+        int cod2 = Integer.parseInt(txtCodPro.getText());
 
         if (cod == null || cod.trim().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Seleccione un producto para eliminar.");
@@ -466,7 +501,7 @@ public class PruebaProducto extends javax.swing.JFrame {
 
         if (confirm == JOptionPane.YES_OPTION) {
             try {
-                if (pd.eliminarProducto(cod)) {
+                if (pd.eliminarProducto(cod2)) {
                     JOptionPane.showMessageDialog(null, "Producto eliminado correctamente.");
                     limpiarCajas();
                     DefaultTableModel modelo = pd.listarProducto();
@@ -489,6 +524,12 @@ public class PruebaProducto extends javax.swing.JFrame {
     private void txtBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtBuscarActionPerformed
+
+    private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
+        Principal principal = new Principal();
+        principal.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnVolverActionPerformed
 
     /**
      * @param args the command line arguments
@@ -531,6 +572,7 @@ public class PruebaProducto extends javax.swing.JFrame {
     private javax.swing.JButton btnEditarPro;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnSelecionar;
+    private javax.swing.JButton btnVolver;
     private javax.swing.JComboBox<String> cbxCat;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

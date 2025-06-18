@@ -35,7 +35,7 @@ public class CategoriaDAO {
     }
 
     public boolean agregarCategoria(Categoria c) throws SQLException {
-        String sql = "INSERT INTO categoria (cod_cat, nom_cat, desc_cat) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO categoria (nom_cat, desc_cat) VALUES (?, ?)";
 
         try (Connection con = Conexion.getConexion()) {
             con.setAutoCommit(false);
@@ -43,9 +43,8 @@ public class CategoriaDAO {
             try (PreparedStatement pst = con.prepareStatement(sql);) {
 
                 // Inserta el producto
-                pst.setInt(1, c.cod_cat);
-                pst.setString(2, c.nom_cat);
-                pst.setInt(3, c.desc_cat);
+                pst.setString(1, c.nom_cat);
+                pst.setInt(2, c.desc_cat);
                 pst.executeUpdate();
 
                 con.commit();

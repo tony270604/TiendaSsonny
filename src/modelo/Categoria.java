@@ -4,6 +4,7 @@ public class Categoria {
     public int cod_cat;
     public String nom_cat;
     public int desc_cat;
+    
 
     public int getCod_cat() {
         return cod_cat;

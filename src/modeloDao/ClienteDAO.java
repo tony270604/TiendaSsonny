@@ -14,7 +14,6 @@ import javax.swing.table.DefaultTableModel;
 
 public class ClienteDAO {
 
-    //AGREGAR CLIENTE
     public boolean agregarCliente(String dni, String nombre, String numero, String correo) {
         String sql = "INSERT INTO cliente (dni_cli, nom_cli, num_cli, correo_cli) VALUES (?, ?, ?, ?)";
 
@@ -34,7 +33,6 @@ public class ClienteDAO {
         }
     }
 
-    //ACTUALIZAR CLIENTES
     public DefaultTableModel obtenerClientes() {
         DefaultTableModel modelo = new DefaultTableModel();
         modelo.addColumn("DNI");
@@ -63,7 +61,6 @@ public class ClienteDAO {
         return modelo;
     }
 
-    //BUSACAR CLIENTES 
     public DefaultTableModel buscarClientePorDNI(String dniParcial) {
         DefaultTableModel modelo = new DefaultTableModel();
         modelo.addColumn("DNI");
@@ -75,7 +72,7 @@ public class ClienteDAO {
 
         try (Connection con = Conexion.getConexion(); PreparedStatement pst = con.prepareStatement(sql)) {
 
-            pst.setString(1, dniParcial + "%"); // Empieza con...
+            pst.setString(1, dniParcial + "%");
 
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
@@ -95,7 +92,26 @@ public class ClienteDAO {
         return modelo;
     }
 
-    //EDITAR CLIENTE
+    public Cliente obtenerClientePorDNI(String dni) {
+        Cliente cliente = null;
+        String sql = "SELECT * FROM cliente WHERE dni_cli = ?";
+        try (Connection con = Conexion.getConexion(); PreparedStatement pst = con.prepareStatement(sql)) {
+            pst.setString(1, dni);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                cliente = new Cliente();
+                cliente.setDni_cli(rs.getString("dni_cli"));
+                cliente.setNom_cli(rs.getString("nom_cli"));
+                cliente.setNum_cli(rs.getInt("num_cli"));
+                cliente.setCorreo_cli(rs.getString("correo_cli"));
+                // Completa con otros campos si existen
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al buscar cliente por DNI: " + e.getMessage());
+        }
+        return cliente;
+    }
+
     public boolean editarCliente(String dni, String nombre, String numero, String correo) {
         String sql = "UPDATE cliente SET nom_cli = ?, num_cli = ?, correo_cli = ? WHERE dni_cli = ?";
 
@@ -114,7 +130,6 @@ public class ClienteDAO {
         }
     }
 
-    //ELIMINAR CLIENTES
     public boolean eliminarCliente(String dni) {
         String sql = "DELETE FROM cliente WHERE dni_cli = ?";
 
@@ -129,7 +144,6 @@ public class ClienteDAO {
         }
     }
 
-    //LISTAR CLIENTE
     public List<Cliente> listarClientes() {
         List<Cliente> lista = new ArrayList<>();
         String sql = "SELECT * FROM cliente";
