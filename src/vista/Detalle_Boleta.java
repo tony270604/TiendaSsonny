@@ -135,6 +135,8 @@ public class Detalle_Boleta extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jPanel1.setBackground(new java.awt.Color(0, 153, 255));
+
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         jLabel1.setText("Boleta");
@@ -198,7 +200,7 @@ public class Detalle_Boleta extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(108, 108, 108)
                         .addComponent(btnAñadir)))
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -327,7 +329,7 @@ public class Detalle_Boleta extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(30, 30, 30)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(30, Short.MAX_VALUE))
         );
@@ -372,6 +374,7 @@ public class Detalle_Boleta extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Producto no encontrado.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
+       
 
         int cantidad;
         try {
@@ -382,6 +385,15 @@ public class Detalle_Boleta extends javax.swing.JFrame {
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Cantidad inválida.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
+        }
+        
+         // Validar si el producto ya fue añadido
+        for (int i = 0; i < tablaRegistroVista.getRowCount(); i++) {
+            String codigoTabla = tablaRegistroVista.getValueAt(i, 0).toString();
+            if (producto.getCodigo().equals(codigoTabla)) {
+                JOptionPane.showMessageDialog(this, "Este producto ya fue añadido.", "Error", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
         }
 
         float total = producto.getPrecioConDescuento() * cantidad;
@@ -452,6 +464,12 @@ public class Detalle_Boleta extends javax.swing.JFrame {
         Vendedor vendedorObjeto = new Vendedor(); // Asegúrate de tener la clase Vendedor
         vendedorObjeto.setCod_ven(NombreUsuario.codigo_Usuario);
         vendedorObjeto.setNom_ven(NombreUsuario.nombre_Usuario);
+        
+        if (tablaRegistroVista.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(this, "Debe añadir al menos un producto a la boleta.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         List<DetalleBoleta> listaDetalles = new ArrayList<>();
         DefaultTableModel modelo = (DefaultTableModel) tablaRegistroVista.getModel();
 

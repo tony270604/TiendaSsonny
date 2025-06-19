@@ -9,7 +9,7 @@ public class Conexion {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
 
-            String url = "jdbc:mysql://localhost:3307/bd_sonny"; 
+            String url = "jdbc:mysql://localhost:3306/bd_ssonny"; 
             String usr = "root";  
             String psw = "root"; 
 

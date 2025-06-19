@@ -265,29 +265,37 @@ public class CrudCategoria extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
+        String nombre = txtNomCat.getText().trim();
+        String descTexto = txtDescCat.getText().trim();
+
+        if (nombre.isEmpty() || descTexto.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Debe completar todos los campos.");
+            return;
+        }
+
         try {
-            int desc = Integer.parseInt(txtDescCat.getText());
+            int desc = Integer.parseInt(descTexto);
 
             if (desc < 0) {
                 JOptionPane.showMessageDialog(null, "El descuento no puede ser negativo.");
                 return;
             }
-            c.setNom_cat(txtNomCat.getText());
+
+            c.setNom_cat(nombre);
             c.setDesc_cat(desc);
             boolean exito = cd.agregarCategoria(c);
 
             if (exito) {
-                JOptionPane.showInternalMessageDialog(null, "Se registro correctamente la categoria.",
-                        "Registro exitoso!!", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Se registró correctamente la categoría.");
                 limpiarCajas();
                 DefaultTableModel modelo = cd.listarCategoriaTabla();
                 jTable1.setModel(modelo);
             } else {
-                JOptionPane.showMessageDialog(null, "No se pudo agregar la categoria.");
+                JOptionPane.showMessageDialog(null, "No se pudo agregar la categoría.");
             }
 
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "Descuento inválido. Asegúrate de ingresar números.");
+            JOptionPane.showMessageDialog(null, "Descuento inválido. Ingrese un número entero.");
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error en la base de datos: " + e.getMessage());
         }
@@ -306,30 +314,41 @@ public class CrudCategoria extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSelecionarActionPerformed
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
-        if (txtCodCat.getText() == null || txtCodCat.getText().trim().isEmpty()
-                || txtNomCat.getText() == null || txtNomCat.getText().trim().isEmpty()
-                || txtDescCat.getText() == null || txtDescCat.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Seleccione una categoria antes de editar");
+        String cod = txtCodCat.getText().trim();
+        String nombre = txtNomCat.getText().trim();
+        String descTexto = txtDescCat.getText().trim();
+
+        if (cod.isEmpty() || nombre.isEmpty() || descTexto.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Complete todos los campos antes de editar.");
             return;
         }
 
-        int cod_cat = Integer.parseInt(txtCodCat.getText());
-        int desc_cat = Integer.parseInt(txtDescCat.getText());
-
-        c.setCod_cat(cod_cat);
-        c.setNom_cat(txtNomCat.getText());
-        c.setDesc_cat(desc_cat);
         try {
+            int cod_cat = Integer.parseInt(cod);
+            int desc_cat = Integer.parseInt(descTexto);
+
+            if (desc_cat < 0) {
+                JOptionPane.showMessageDialog(null, "El descuento no puede ser negativo.");
+                return;
+            }
+
+            c.setCod_cat(cod_cat);
+            c.setNom_cat(nombre);
+            c.setDesc_cat(desc_cat);
+
             if (cd.editarCategoria(c)) {
-                JOptionPane.showMessageDialog(null, "Categoria actualizada correctamente.");
+                JOptionPane.showMessageDialog(null, "Categoría actualizada correctamente.");
                 limpiarCajas();
                 DefaultTableModel modelo = cd.listarCategoriaTabla();
                 jTable1.setModel(modelo);
             } else {
-                JOptionPane.showMessageDialog(null, "No se pudo actualizar la categoria.");
+                JOptionPane.showMessageDialog(null, "No se pudo actualizar la categoría.");
             }
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(null, "Formato inválido en el código o descuento.");
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Error al actualizar la categoria: " + ex.getMessage());
+            JOptionPane.showMessageDialog(null, "Error al actualizar la categoría: " + ex.getMessage());
         }
     }//GEN-LAST:event_btnEditarActionPerformed
 

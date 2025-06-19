@@ -130,4 +130,23 @@ public class CategoriaDAO {
         }
     }
 
+    public String obtenerNombreCategoriaPorId(int cod_cat) {
+        String sql = "SELECT nom_cat FROM categoria WHERE cod_cat = ?";
+
+        try (Connection con = Conexion.getConexion(); 
+             PreparedStatement pst = con.prepareStatement(sql)) {
+
+            pst.setInt(1, cod_cat);
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                return rs.getString("nom_cat");
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error al obtener nombre de la categoría: " + e.getMessage());
+        }
+
+        return null;
+    }
+
 }

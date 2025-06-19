@@ -116,6 +116,11 @@ public class Clientes extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(tablaClientes);
 
+        txtBuscarDNI.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtBuscarDNIActionPerformed(evt);
+            }
+        });
         txtBuscarDNI.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtBuscarDNIKeyReleased(evt);
@@ -252,12 +257,41 @@ public class Clientes extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        String dni = txtDNI.getText();
-        String nombre = txtNombre.getText();
-        String numero = txtNumero.getText();
-        String correo = txtCorreo.getText();
+        String dni = txtDNI.getText().trim();
+        String nombre = txtNombre.getText().trim();
+        String numero = txtNumero.getText().trim();
+        String correo = txtCorreo.getText().trim();
+
+        // Validar DNI: 8 caracteres numéricos
+        if (dni.length() != 8 || !dni.matches("\\d{8}")) {
+            JOptionPane.showMessageDialog(this, "DNI debe tener 8 dígitos numéricos");
+            txtDNI.requestFocus();
+            return;
+        }
+
+        // Validar nombre: no vacío, máximo 50 caracteres
+        if (nombre.isEmpty() || nombre.length() > 50) {
+            JOptionPane.showMessageDialog(this, "Nombre es obligatorio y debe tener máximo 50 caracteres");
+            txtNombre.requestFocus();
+            return;
+        }
+
+        // Validar número: 9 caracteres numéricos (ejemplo: teléfono)
+        if (numero.length() != 9 || !numero.matches("\\d{9}")) {
+            JOptionPane.showMessageDialog(this, "Número debe tener 9 dígitos numéricos");
+            txtNumero.requestFocus();
+            return;
+        }
+
+        // Validar correo: formato básico válido, máximo 60 caracteres
+        if (correo.isEmpty() || correo.length() > 60 || !correo.matches("^[\\w.-]+@[\\w.-]+\\.\\w{2,}$")) {
+            JOptionPane.showMessageDialog(this, "Correo inválido o demasiado largo (máx 60 caracteres)");
+            txtCorreo.requestFocus();
+            return;
+        }
 
         ClienteDAO dao = new ClienteDAO();
+
         boolean exito = dao.agregarCliente(dni, nombre, numero, correo);
 
         if (exito) {
@@ -268,7 +302,6 @@ public class Clientes extends javax.swing.JFrame {
         } else {
             JOptionPane.showMessageDialog(this, "Error al agregar cliente");
         }
-
     }
 
     private void limpiarCampos() {
@@ -277,21 +310,27 @@ public class Clientes extends javax.swing.JFrame {
         txtNumero.setText("");
         txtCorreo.setText("");
     }//GEN-LAST:event_jButton1ActionPerformed
-
+    
+    private String dniOriginal = "";
+    private String nombreOriginal = "";
     private void btnSeleccionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSeleccionarActionPerformed
-        int fila = tablaClientes.getSelectedRow();
+         int fila = tablaClientes.getSelectedRow();
 
         if (fila != -1) {
-            String dni = tablaClientes.getValueAt(fila, 0).toString();
-            String nombre = tablaClientes.getValueAt(fila, 1).toString();
+            dniOriginal = tablaClientes.getValueAt(fila, 0).toString();
+            nombreOriginal = tablaClientes.getValueAt(fila, 1).toString();
             String numero = tablaClientes.getValueAt(fila, 2).toString();
             String correo = tablaClientes.getValueAt(fila, 3).toString();
 
-            txtDNI.setText(dni);
-            txtNombre.setText(nombre);
+            txtDNI.setText(dniOriginal);
+            txtNombre.setText(nombreOriginal);
             txtNumero.setText(numero);
             txtCorreo.setText(correo);
             txtBuscarDNI.setText("");
+
+            // Deshabilitar edición de DNI y Nombre para evitar cambios
+            txtDNI.setEditable(false);
+            txtNombre.setEditable(false);
         } else {
             JOptionPane.showMessageDialog(this, "Selecciona un cliente de la tabla");
         }
@@ -313,13 +352,33 @@ public class Clientes extends javax.swing.JFrame {
     }//GEN-LAST:event_tablaClientesMouseClicked
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
-        String dni = txtDNI.getText(); // no se debe editar
-        String nombre = txtNombre.getText();
-        String numero = txtNumero.getText();
-        String correo = txtCorreo.getText();
+        String dniActual = txtDNI.getText().trim();
+        String nombreActual = txtNombre.getText().trim();
+        String numero = txtNumero.getText().trim();
+        String correo = txtCorreo.getText().trim();
+
+        // Validar que DNI y Nombre no hayan sido modificados
+        if (!dniActual.equals(dniOriginal) || !nombreActual.equals(nombreOriginal)) {
+            JOptionPane.showMessageDialog(this, "No puede cambiar el DNI ni el Nombre del cliente.");
+            txtDNI.setText(dniOriginal);
+            txtNombre.setText(nombreOriginal);
+            return;
+        }
+
+        // Validar número: debe ser de 9 dígitos
+        if (!numero.matches("\\d{9}")) {
+            JOptionPane.showMessageDialog(this, "El número debe tener exactamente 9 dígitos numéricos.");
+            return;
+        }
+
+        // Validar correo: formato básico
+        if (!correo.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$")) {
+            JOptionPane.showMessageDialog(this, "Correo no válido. Debe tener el formato usuario@dominio.com");
+            return;
+        }
 
         ClienteDAO dao = new ClienteDAO();
-        boolean exito = dao.editarCliente(dni, nombre, numero, correo);
+        boolean exito = dao.editarCliente(dniActual, nombreActual, numero, correo);
 
         if (exito) {
             JOptionPane.showMessageDialog(this, "Cliente actualizado");
@@ -332,7 +391,13 @@ public class Clientes extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEditarActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        String dni = txtDNI.getText();
+         String dni = txtDNI.getText().trim();
+
+        if (dni.isEmpty() || dni.length() != 8 || !dni.matches("\\d{8}")) {
+            JOptionPane.showMessageDialog(this, "Selecciona un cliente válido para eliminar");
+            txtDNI.requestFocus();
+            return;
+        }
 
         int confirm = JOptionPane.showConfirmDialog(this, "¿Eliminar cliente?", "Confirmar", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
@@ -345,7 +410,7 @@ public class Clientes extends javax.swing.JFrame {
                 tablaClientes.setModel(modelo);
                 limpiarCampos();
             } else {
-                JOptionPane.showMessageDialog(this, "No se pudo eliminar");
+                JOptionPane.showMessageDialog(this, "No se pudo eliminar cliente");
             }
         }
     }//GEN-LAST:event_jButton5ActionPerformed
@@ -355,6 +420,10 @@ public class Clientes extends javax.swing.JFrame {
         principal.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btmVolverActionPerformed
+
+    private void txtBuscarDNIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscarDNIActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtBuscarDNIActionPerformed
 
     /**
      * @param args the command line arguments
