@@ -13,7 +13,11 @@ import java.sql.*;
 import java.util.ArrayList;
 import modeloDao.VendedorDAO;
 import vista.Principal;
-
+import java.awt.Color;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import javax.swing.JPanel;
 /**
  *
  * @author MGamero
@@ -32,6 +36,27 @@ public class RegistrosBoletas extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
     }
 
+    class jPanelGradient extends JPanel {
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g); // Siempre se llama al super
+        Graphics2D g2d = (Graphics2D) g;
+        int width = getWidth();
+        int height = getHeight();
+
+        // Colores para un programa de ventas con letras negras
+        Color color1 = new Color(224, 247, 250); // #E0F7FA - celeste muy claro
+        Color color2 = new Color(178, 235, 242); // #B2EBF2 - azul pastel claro
+
+        GradientPaint gp = new GradientPaint(0, 0, color1, 0, height, color2);
+        g2d.setPaint(gp);
+        g2d.fillRect(0, 0, width, height);
+    }
+}
+    
+    
+    
     private void camposTabla() {
         DefaultTableModel modelo = new DefaultTableModel();
         modelo.addColumn("N° Boleta");
@@ -113,7 +138,7 @@ public class RegistrosBoletas extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
+        jPanel1 = new jPanelGradient();
         txtBuscar = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -134,7 +159,7 @@ public class RegistrosBoletas extends javax.swing.JFrame {
         });
         jPanel1.add(txtBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 40, 230, 50));
 
-        jLabel1.setText("busacar factura por numero de factura o DNI cliente");
+        jLabel1.setText("Busacar factura por numero de factura o DNI cliente");
         jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 40, 290, 50));
 
         tablaBoletas.setModel(new javax.swing.table.DefaultTableModel(

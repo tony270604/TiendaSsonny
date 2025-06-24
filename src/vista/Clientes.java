@@ -9,6 +9,12 @@ import java.sql.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JOptionPane;
 import modeloDao.ClienteDAO;
+import java.awt.Color;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import javax.swing.JPanel;
+
 
 /**
  *
@@ -27,7 +33,26 @@ public class Clientes extends javax.swing.JFrame {
         DefaultTableModel modelo = dao.obtenerClientes();
         tablaClientes.setModel(modelo);
     }
+    
+    class jPanelGradient extends JPanel {
 
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g); // Siempre se llama al super
+        Graphics2D g2d = (Graphics2D) g;
+        int width = getWidth();
+        int height = getHeight();
+
+        // Colores para un programa de ventas con letras negras
+        Color color1 = new Color(224, 247, 250); // #E0F7FA - celeste muy claro
+        Color color2 = new Color(178, 235, 242); // #B2EBF2 - azul pastel claro
+
+        GradientPaint gp = new GradientPaint(0, 0, color1, 0, height, color2);
+        g2d.setPaint(gp);
+        g2d.fillRect(0, 0, width, height);
+    }
+}
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -37,7 +62,7 @@ public class Clientes extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
+        jPanel1 = new jPanelGradient();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();

@@ -1,10 +1,15 @@
 package vista;
 
+import java.awt.Color;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import javax.swing.JOptionPane;
 import modelo.Vendedor;
 import modeloDao.VendedorDAO;
 import java.sql.SQLException;
+import javax.swing.JPanel;
 import modelo.NombreUsuario;
 public class Login extends javax.swing.JFrame {
 
@@ -13,13 +18,32 @@ public class Login extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
     }
 
+class jPanelGradient extends JPanel {
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g); // Siempre se llama al super
+        Graphics2D g2d = (Graphics2D) g;
+        int width = getWidth();
+        int height = getHeight();
+
+        // Colores para un programa de ventas con letras negras
+        Color color1 = new Color(224, 247, 250); // #E0F7FA - celeste muy claro
+        Color color2 = new Color(178, 235, 242); // #B2EBF2 - azul pastel claro
+
+        GradientPaint gp = new GradientPaint(0, 0, color1, 0, height, color2);
+        g2d.setPaint(gp);
+        g2d.fillRect(0, 0, width, height);
+    }
+}
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
+        jPanel1 = new jPanelGradient();
+        jPanel2 = new jPanelGradient();
+        jPanel3 = new jPanelGradient();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         txtCorreo = new javax.swing.JTextField();
@@ -88,7 +112,7 @@ public class Login extends javax.swing.JFrame {
 
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 0, 360, 390));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, 450, -1));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, 420, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
