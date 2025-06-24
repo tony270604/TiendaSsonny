@@ -20,6 +20,11 @@ import modeloDao.ClienteDAO;
 import modeloDao.ProductoDao;
 import modeloDao.VendedorDAO;
 import vista.Principal;
+import java.awt.Color;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import javax.swing.JPanel;
 
 /**
  *
@@ -99,6 +104,25 @@ public class Detalle_Boleta extends javax.swing.JFrame {
         }
     }
 
+    
+    class jPanelGradient extends JPanel {
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g); // Siempre se llama al super
+        Graphics2D g2d = (Graphics2D) g;
+        int width = getWidth();
+        int height = getHeight();
+
+        // Colores para un programa de ventas con letras negras
+        Color color1 = new Color(224, 247, 250); // #E0F7FA - celeste muy claro
+        Color color2 = new Color(178, 235, 242); // #B2EBF2 - azul pastel claro
+
+        GradientPaint gp = new GradientPaint(0, 0, color1, 0, height, color2);
+        g2d.setPaint(gp);
+        g2d.fillRect(0, 0, width, height);
+    }
+}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -108,7 +132,7 @@ public class Detalle_Boleta extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
+        jPanel1 = new jPanelGradient();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -439,29 +463,26 @@ public class Detalle_Boleta extends javax.swing.JFrame {
         }
         System.out.println("DNI extraído: " + dniCliente);
 
-        // Verifica la longitud
-        if (dniCliente.length() > 8) { // Cambia 8 por la longitud máxima permitida
+        if (dniCliente.length() > 8) { 
             JOptionPane.showMessageDialog(this, "El DNI del cliente es demasiado largo.", "Error", JOptionPane.ERROR_MESSAGE);
-            return; // Salir del método si el DNI es demasiado largo
+            return; 
         }
 
-        String vendedorSeleccionado = "0001"; // o cbxVendedores.getSelectedItem().toString();
+        String vendedorSeleccionado = "0001"; 
 
         int codVendedor = Integer.parseInt(vendedorSeleccionado);
 
         System.out.println("vendedor extraído: " + codVendedor);
         System.out.println(NombreUsuario.codigo_Usuario);
         ClienteDAO clienteDAO = new ClienteDAO();
-        Cliente clienteObjeto = clienteDAO.obtenerClientePorDNI(dniCliente); // Implementa este método en tu DAO
+        Cliente clienteObjeto = clienteDAO.obtenerClientePorDNI(dniCliente); 
         if (clienteObjeto == null) {
             JOptionPane.showMessageDialog(this, "Cliente no encontrado.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        //Cliente clienteObjeto = new Cliente(); // Asegúrate de tener la clase Cliente
-        //clienteObjeto.setDni_cli(dniCliente); // O cualquier otro atributo que necesites
         VendedorDAO vendedordao = new VendedorDAO();
-        Vendedor vendedorObjeto = new Vendedor(); // Asegúrate de tener la clase Vendedor
+        Vendedor vendedorObjeto = new Vendedor(); 
         vendedorObjeto.setCod_ven(NombreUsuario.codigo_Usuario);
         vendedorObjeto.setNom_ven(NombreUsuario.nombre_Usuario);
         
