@@ -166,6 +166,11 @@ public class PruebaProducto extends javax.swing.JFrame {
         jLabel7.setText("categoria");
 
         cbxCat.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbxCat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbxCatActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -530,6 +535,10 @@ public class PruebaProducto extends javax.swing.JFrame {
         principal.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnVolverActionPerformed
+
+    private void cbxCatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxCatActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbxCatActionPerformed
 
     /**
      * @param args the command line arguments

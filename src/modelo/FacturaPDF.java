@@ -16,9 +16,9 @@ public class FacturaPDF {
         
         
         // Define la ruta donde se guardará el PDF
-        String ruta = "C:\\Users\\tony2\\Desktop\\tiendasoony Itext pdf\\" + nombreArchivo; // Cambia esto a la ruta deseada
+        String ruta = "C:\\Users\\tony2\\Desktop\\Proyectos\\Proyectos\\Proyecto-Lenguaje Programación\\" + nombreArchivo; // Cambia esto a la ruta deseada
         // Crear la carpeta si no existe
-        File carpeta = new File("C:\\Users\\tony2\\Desktop\\tiendasoony Itext pdf");
+        File carpeta = new File("C:\\Users\\tony2\\Desktop\\Proyectos\\Proyectos\\Proyecto-Lenguaje Programación\\tiendasoony Itext pdf");
         if (!carpeta.exists()) {
             carpeta.mkdirs(); // Crea la carpeta (y padres si es necesario)
         }

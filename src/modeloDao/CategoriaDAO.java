@@ -7,8 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelo.*;
@@ -28,8 +26,8 @@ public class CategoriaDAO {
                 c.setDesc_cat(rs.getInt("desc_cat"));
                 ved.add(c);
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(CategoriaDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error al listar categorias: " + e.getMessage());
         }
         return ved;
     }
@@ -90,7 +88,6 @@ public class CategoriaDAO {
             con.setAutoCommit(false);
 
             try (PreparedStatement pst = con.prepareStatement(sql);) {
-                // Actualiza datos del producto
                 pst.setString(1, c.nom_cat);
                 pst.setInt(2, c.desc_cat);
                 pst.setInt(3, c.cod_cat);
